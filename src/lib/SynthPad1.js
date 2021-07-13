@@ -18,7 +18,7 @@ const synthPad1 = function () {
   this.next = message => console.warn('ignoring message', message)
 
   this.synth = new Tone.DuoSynth({
-    harmonicity: 1,
+    harmonicity: 2,
     volume: -20,
     voice0: {
       oscillator: { type: "sawtooth" },
@@ -86,37 +86,36 @@ const synthPad1 = function () {
     set: (val) => this.synth.vibratoRate.value = val
   })
 
-  const dist = new Tone.Distortion(0.1);
+  const dist = new Tone.Distortion(0);
   const delay = new Tone.FeedbackDelay("8n", 0.4);
   delay.wet.value = 0.2;
   const vol = new Tone.Volume(0);
+  const panner = new Tone.Panner({ pan: 0 });
   const verb = new Tone.Freeverb({
     dampening: 400,
     roomSize: 0.9,
     wet: 0.25,
   });
+  const gain = new Tone.Gain(0.5);
 
-  const gain = new Tone.Gain(0.1);
-
-  this.synth.chain(gain, dist, delay, verb, vol, Tone.Destination);
+  this.synth.chain(gain, dist, delay, verb, vol, panner, Tone.Destination);
 
   // const cMinor7 = ["C4", "D#4", "G4", "A#4", "G4", "D#4"];
-  const cMinor6 = ["C3", "D#3", "A3", "C4", "D#4", "A3"];
-  let notes = cMinor6;
+  const fantasy = ["C3", "D3", "E3", "G3", "C4", "D4", "E4", "G4", "C5", "G4", "E4", "D4", "C4", "G3", "E3", "D3"];
+  let notes = fantasy;
   let noteIndex = 0;
 
   const repeater = (time) => {
     let note = notes[noteIndex % notes.length];
-    this.synth.triggerAttackRelease(note, "4n", time).toDestination();
+    this.synth.triggerAttackRelease(note, "8n", time);
     noteIndex++;
   }
 
   Tone.Transport.scheduleRepeat((time) => {
     repeater(time);
-  }, "4n");
+  }, "8n");
 
   return this
 }
-
 
 export default synthPad1

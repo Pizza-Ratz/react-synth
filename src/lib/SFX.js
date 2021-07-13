@@ -1,7 +1,15 @@
-const subwayAmbience = new Tone.Player({
-  url: "../assets/audio/subway-station-ambience.mp3",
+import * as Tone from 'tone'
+
+const stationAmbience = new Tone.Player({
+  url: "../assets/audio/subway-station-ambience-loopable.mp3",
   loop: true,
   volume: -3,
+}).toDestination();
+
+const rideAmbience = new Tone.Player({
+  url: "../assets/audio/subway-interior-ambience-loopable.mp3",
+  loop: true,
+  volume: -10,
 }).toDestination();
 
 const trainArrival1 = new Tone.Player({
@@ -33,3 +41,5 @@ const subwayChime = new Tone.Player({
   url: "../assets/audio/subway-doors-chime.mp3",
   volume: -6,
 }).toDestination();
+
+export default rideAmbience;
