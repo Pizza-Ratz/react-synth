@@ -4,7 +4,7 @@ import React from 'react'
 import * as Tone from 'tone'
 // import PropTypes from 'prop-types'
 import { FaPlay, FaPause, FaStop } from 'react-icons/fa'
-import '../styles/TransportControls.css'
+import '../styles/TransportControls.scss'
 
 
 
