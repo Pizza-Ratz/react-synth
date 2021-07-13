@@ -1,9 +1,5 @@
 import * as Tone from 'tone'
 
-function linearToLog(val) {
-  return (val > 0) ? Math.log(Math.abs(val)) : 0
-}
-
 /**
  * Kind of a bright FM sound with a gentle attack.
  * 
@@ -59,14 +55,15 @@ const synthPad1 = function () {
     vibratoAmount: 0.1,
   })
 
+  // gain goes from -7db - +3d
   this.volume = {
     control: {
-      next: (val) => this.synth.volume.value = linearToLog(val)
+      next: (val) => this.synth.volume.value = val
     },
   }
   Object.defineProperty(this.volume, 'value', {
     get: () => this.synth.volume.value,
-    set: (val) => this.synth.volume.value = linearToLog(val)
+    set: (val) => this.synth.volume.value = val
   })
 
   this.vibrato = {}

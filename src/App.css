@@ -1,5 +1,4 @@
 .App {
-  text-align: center;
   align-content: center;
   background-color: #282c34;
 }
@@ -15,13 +14,19 @@
   }
 }
 
-.App-header {
+header {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+}
+
+main {
+  display: flex;
+  flex-direction: row;
+  align-content: space-between;
 }
 
 .App-link {

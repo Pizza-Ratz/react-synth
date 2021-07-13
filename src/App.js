@@ -18,11 +18,13 @@ function App() {
       <header className="App-header">
         Kitchen Sink
       </header>
-      <TransportControls />
-      <Knob />
-      <Fader />
-      <Switch />
-      <SynthPad1 />
+      <main>
+        <TransportControls />
+        <Knob />
+        <Fader />
+        <Switch />
+        <SynthPad1 />
+      </main>
     </div>
   );
 }

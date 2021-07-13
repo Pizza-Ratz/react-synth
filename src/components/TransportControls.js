@@ -1,3 +1,5 @@
+// adapted from https://codepen.io/praktikdan/pen/jbqBWm?limit=all&page=9&q=synth
+
 import React from 'react'
 import * as Tone from 'tone'
 // import PropTypes from 'prop-types'

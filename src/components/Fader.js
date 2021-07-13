@@ -16,13 +16,16 @@ const Fader = ({
   orientation = "vertical",
   direction = "rtl",
   tooltips = true,
-  label = 'fader'
+  label = 'fader',
+  onValueChange = () => { }
 }) => {
   const fader = React.useRef()
   const [initialized, setInitialized] = React.useState(false)
 
   React.useEffect(() => {
-    if (fader && fader.current && !initialized) {
+    if (!(fader && fader.current)) return
+
+    if (!initialized) {
       noUiSlider.create(fader.current, {
         orientation,
         direction,
@@ -34,13 +37,17 @@ const Fader = ({
         range
       })
 
+      fader.current
+        .querySelector('.noUi-handle')
+        .addEventListener('mousemove', () => onValueChange(fader.current.noUiSlider.get(true)))
+
       setInitialized(true)
     }
-  }, [start, range, orientation, direction, step, pips, tooltips, initialized])
+  }, [start, range, orientation, direction, step, pips, tooltips, initialized, onValueChange])
 
   return (
     <div className={`fader ${className}`}>
-      <div ref={fader} />
+      <div ref={fader} className="fader-slider" />
       <label className="fader-label">{label}</label>
     </div>
   )
@@ -50,6 +57,12 @@ Fader.propTypes = {
   range: PropTypes.shape({
     min: PropTypes.arrayOf(PropTypes.number),
     max: PropTypes.arrayOf(PropTypes.number)
+  }),
+  pips: PropTypes.shape({
+    mode: PropTypes.oneOf(['range', 'steps', 'positions', 'count', 'values']),
+    values: PropTypes.number,
+    density: PropTypes.number,
+    stepped: PropTypes.bool,
   }),
   start: PropTypes.arrayOf(PropTypes.number),
   className: PropTypes.string,
