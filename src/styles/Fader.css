@@ -1,0 +1,39 @@
+.fader {
+  display: flex;
+  align-content: center;
+  flex-direction: column;
+  margin: 2em;
+  color: #bbb;
+}
+
+.fader .noUi-target {
+  height: 5em;
+}
+
+.fader .noUi-handle {
+  background-color: rgb(255, 255, 255);
+}
+
+.fader .noUi-base {
+  background-color: rgb(140, 145, 173);
+}
+
+.fader .noUi-tooltip {
+  display: none;
+}
+
+.fader .noUi-active .noUi-tooltip {
+  display: block;
+}
+
+.fader .noUi-vertical .noUi-handle-lower .noUi-tooltip {
+	font-family: Roboto;
+  font-weight: bold;
+  font-size: small;
+  top: 50%;
+	right: 130%;
+	box-sizing: border-box;
+	min-width: 40px;
+  color: rgb(110, 117, 160);
+  background-color:  rgb(176, 188, 255);
+}
