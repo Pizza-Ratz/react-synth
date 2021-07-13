@@ -84,11 +84,25 @@
   height: 100%;
   background-image: linear-gradient(rgba(0, 0, 0, 0.25), rgba(2, 165, 238, 0.4), rgba(0, 0, 0, 0.25));
 }
+.transport-controls .buttons-wrapper #stop.button.selected:after, .transport-controls .buttons-wrapper #stop.button.selected:before {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.25), rgba(238, 2, 2, 0.4), rgba(0, 0, 0, 0.25));
+}
+.transport-controls .buttons-wrapper #play.button.selected:after, .transport-controls .buttons-wrapper #play.button.selected:before {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.25), rgba(2, 238, 2, 0.4), rgba(0, 0, 0, 0.25));
+}
 .transport-controls .buttons-wrapper .button.selected:before {
   left: -4px;
 }
 .transport-controls .buttons-wrapper .button.selected:after {
   right: -4px;
+}
+.transport-controls .buttons-wrapper #stop.button.selected .fa {
+  color: rgb(245, 20, 20);
+  text-shadow: 0 0 10px rgba(245, 20, 20, 0.75);
+}
+.transport-controls .buttons-wrapper #play.button.selected .fa {
+  color: rgb(42, 252, 15);
+  text-shadow: 0 0 10px rgba(42, 252, 15, 0.75);
 }
 .transport-controls .buttons-wrapper .button.selected .fa {
   color: white;
