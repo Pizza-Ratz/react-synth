@@ -1,5 +1,5 @@
 import React from 'react'
-import './App.css';
+import './App.scss';
 import * as Tone from 'tone'
 import { Knob, Fader, Switch, TransportControls } from './components'
 import SynthPad1 from './components/SynthPad1';
