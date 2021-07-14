@@ -1,14 +1,5 @@
-@mixin text {
+@mixin label {
   text-align: center;
-
-  p {
-    font-size: 15px;
-    color: #555;
-    
-    a {
-      text-decoration: none;
-      color: #03a9f4;
-    }
-  }
+  color: #03a9f4;
 }
 

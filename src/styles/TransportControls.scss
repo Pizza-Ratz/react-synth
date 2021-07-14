@@ -1,17 +1,18 @@
-@use 'base-plate';
+@use 'materials';
 @use 'text';
 
 .transport-controls {
-  @include base-plate;
+  @include materials.base-plate;
 
-  display: table;
-  // margin: 350px auto 0
+  // display: flex;
+  // margin: 350px auto 0;
+  // width: 330px;
 
   .buttons-wrapper {
-    display: table-cell;
-    vertical-align: middle;
     height: 59px;
-    width: 330px;
+    display: flex;
+    // flex-wrap: nowrap;
+    vertical-align: middle;
     border-radius: 7px;
     background-color: black;
     border: 2px solid black;
@@ -24,19 +25,12 @@
     }
 
     .button {
+      @include materials.touch-surface;
       position: relative;
-      z-index: 1;
       float: left;
       padding: 15px 23px;
-      background-image: linear-gradient(#333, #222);
       text-align: center;
       margin: 0 1px;
-      border-radius: 2px;
-      border-top: 1px solid rgba(255,255,255,0.25);
-      border-left: 1px solid rgba(255,255,255,0.05);
-      border-right: 1px solid rgba(255,255,255,0.05);
-      box-shadow: inset 0 1px 0 rgba(0,0,0,0.1);
-      cursor: pointer;
       transition: all .175s ease;
 
       &:first-child {
@@ -63,12 +57,6 @@
         }
       }
 
-      &:hover {
-        z-index: 2;
-        background-image: linear-gradient(#373737, #262626);
-        box-shadow: inset 0 1px 0 rgba(0,0,0,0.1), 0 4px 16px rgba(0,0,0,0.5);
-      }
-
       .fa {
         color: #424242;
         text-shadow: 0 -1px 0 rgba(0,0,0,0.75);
@@ -92,7 +80,14 @@
           top: 0;
           width: 1px;
           height: 100%;
-          background-image: linear-gradient(rgba(0,0,0,0.25), rgba(2,165,238,0.4), rgba(0,0,0,0.25));
+          background-image: linear-gradient(rgba(0, 0, 0, 0.25), rgba(2, 165, 238, 0.4), rgba(0, 0, 0, 0.25));
+        }
+
+        &#stop:before, &#stop:after {
+          background-image: linear-gradient(rgba(0, 0, 0, 0.25), rgba(238, 2, 2, 0.4), rgba(0, 0, 0, 0.25));
+        }
+        &#play:before, &#play:after {
+          background-image: linear-gradient(rgba(0, 0, 0, 0.25), rgba(2, 238, 2, 0.4), rgba(0, 0, 0, 0.25));
         }
 
         &:before {
@@ -101,6 +96,15 @@
 
         &:after {
           right: -4px
+        }
+
+        &#play .fa {
+          color: rgb(42, 252, 15);
+          text-shadow: 0 0 10px rgba(42, 252, 15, 0.75);
+        }
+        &#stop .fa {
+          color: rgb(245, 20, 20);
+          text-shadow: 0 0 10px rgba(245, 20, 20, 0.75);
         }
 
         .fa {

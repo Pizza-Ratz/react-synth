@@ -19,5 +19,6 @@ header {
 main {
   display: flex;
   flex-direction: row;
-  align-content: space-between;
+  align-items:center;
+  justify-content: space-between;
 }

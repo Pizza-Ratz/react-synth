@@ -2,40 +2,37 @@ import React from "react";
 import PropTypes from 'prop-types'
 import "nouislider/dist/nouislider.css";
 import noUiSlider from 'nouislider'
-import '../styles/Fader.css'
+import '../styles/Fader.scss'
 
-const Fader = ({
-  range = { min: [0], max: [100] },
-  start = [0],
-  step = 1,
-  pips = {
-    mode: 'range',
-    density: 10
-  },
-  className = "",
-  orientation = "vertical",
-  direction = "rtl",
-  tooltips = true,
-  label = 'fader',
-  onValueChange = () => { }
-}) => {
+const Fader = (props) => {
+  props = Object.assign({
+    range: { min: [0], max: [100] },
+    start: [0],
+    step: 1,
+    pips: {
+      mode: 'range',
+      density: 10,
+    },
+    className: "",
+    orientation: "vertical",
+    direction: "rtl",
+    tooltips: true,
+    label: 'fader',
+    onValueChange: () => { }
+  }, props)
+
   const fader = React.useRef()
   const [initialized, setInitialized] = React.useState(false)
+  let { className, onValueChange, orientation, label } = props
+
+  // just in case it's an empty object
+  if (!props.pips) delete props.pips
 
   React.useEffect(() => {
     if (!(fader && fader.current)) return
 
     if (!initialized) {
-      noUiSlider.create(fader.current, {
-        orientation,
-        direction,
-        start,
-        step,
-        pips,
-        connect: true,
-        tooltips,
-        range
-      })
+      noUiSlider.create(fader.current, props)
 
       fader.current
         .querySelector('.noUi-handle')
@@ -43,12 +40,20 @@ const Fader = ({
 
       setInitialized(true)
     }
-  }, [start, range, orientation, direction, step, pips, tooltips, initialized, onValueChange])
+  }, [props, onValueChange, initialized])
+
+  if (orientation === 'vertical') {
+    className += ' vertical'
+  }
+
+  const snowflake = Math.floor(Math.random() * 1000)
 
   return (
-    <div className={`fader ${className}`}>
-      <div ref={fader} className="fader-slider" />
-      <label className="fader-label">{label}</label>
+    <div className='fader-container'>
+      <div className={'fader ' + className}>
+        <div type="range" aria-labelledby={`fader-label-${snowflake}`} ref={fader} />
+      </div>
+      <label id={`fader-label-${snowflake}`} className="label">{label}</label>
     </div>
   )
 };
