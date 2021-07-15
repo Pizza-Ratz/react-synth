@@ -1,5 +1,4 @@
 import * as Tone from 'tone'
-import Transport from 'tone/build/esm/core/clock/Transport'
 import Instrument from 'tone/build/esm/instrument/Instrument'
 
 export class FMDrone extends Tone.PolySynth {

@@ -1,5 +1,4 @@
 import * as Tone from 'tone'
-import {Transport} from 'tone/build/esm/core/clock/Transport'
 import { patterns } from './Patterns'
 
 export class SynthPluck1 extends Tone.PolySynth {

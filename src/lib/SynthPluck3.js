@@ -1,5 +1,4 @@
 import * as Tone from 'tone'
-import {Transport} from 'tone/build/esm/core/clock/Transport'
 import { patterns } from './Patterns'
 
 class SynthPluck3 extends Tone.Synth {
