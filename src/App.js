@@ -1,9 +1,7 @@
 import React from 'react'
 import './App.scss';
 import * as Tone from 'tone'
-import { Knob, Fader, Switch, TransportControls } from './components'
-import SynthPad1 from './components/SynthPad1';
-import SynthPad2 from './components/SynthPad2';
+import { Components, Lib } from './index.mjs'
 
 function App() {
   const [started, setStarted] = React.useState(false);
