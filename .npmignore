@@ -1,0 +1,5 @@
+*.tgz
+src/*.js
+src/*.css
+src/*.scss
+public
