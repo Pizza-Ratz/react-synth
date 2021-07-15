@@ -1,16 +1,16 @@
 import * as Tone from 'tone'
 import { patterns } from './Patterns'
 
-export class SynthPluck1 extends Tone.PolySynth {
+export class SynthPluck1 extends Tone.Synth {
   constructor(options) {
     super(Object.assign({
       voices: 8,
       volume: -20,
       oscillator: {
-        type: "square",
+        type: "sine",
       },
       envelope: {
-        attack: 0.005,
+        attack: 0.01,
         decay: 0.4,
         decayCurve: "exponential",
         sustain: 0,
@@ -18,13 +18,13 @@ export class SynthPluck1 extends Tone.PolySynth {
         releaseCurve: "exponential"
       },
       filter: {
-        Q: 0.5,
+        Q: 1,
         rolloff: -24,
         type: "lowpass",
       },
       filterEnvelope: {
         attack: 0.3,
-        baseFrequency: 300,
+        baseFrequency: 200,
         decay: 1,
         exponent: 2,
         octaves: 3,
@@ -35,7 +35,7 @@ export class SynthPluck1 extends Tone.PolySynth {
 
     this.set({
       envelope: {
-        attack: 0.005,
+        attack: 0.01,
         decay: 0.4,
         decayCurve: "exponential",
         sustain: 0,
@@ -43,13 +43,13 @@ export class SynthPluck1 extends Tone.PolySynth {
         releaseCurve: "exponential"
       },
         filter: {
-        Q: 0.5,
-        rolloff: -12,
+        Q: 1,
+        rolloff: -24,
         type: "lowpass",
       },
       filterEnvelope: {
         attack: 0.3,
-        baseFrequency: 300,
+        baseFrequency: 200,
         decay: 1,
         exponent: 2,
         octaves: 3,
@@ -62,22 +62,22 @@ export class SynthPluck1 extends Tone.PolySynth {
 
     this.efx = {
       dist: new Tone.Distortion(0),
-      delay: new Tone.FeedbackDelay("8n.", 0.3),
+      delay: new Tone.FeedbackDelay("8n.", 0.6),
       pan: new Tone.Panner({ 
         pan: 0 
       }),
       reverb: new Tone.Freeverb({
-        dampening: 600,
-        roomSize: 0.9,
-        wet: 0.05,
+        dampening: 12000,
+        roomSize: 0.8,
+        wet: 0.1
       }),
       gain: new Tone.Gain(1),
     }
-    this.efx.delay.wet.value = 0.2;
+    this.efx.delay.wet.value = 1;
     this.noteIndex = 0;
     this.playing = false;
 
-    this.chain(this.efx.gain, this.efx.dist, this.efx.delay, this.efx.reverb, this.efx.pan);
+    this.chain(this.efx.gain, this.efx.dist, this.efx.delay, this.efx.reverb, this.efx.pan, Tone.Destination);
 
     this.transport = options.transport || Tone.getTransport()
   }
