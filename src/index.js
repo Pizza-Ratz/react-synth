@@ -4,10 +4,6 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-export * from './components'
-
-// if (typeof window !== 'undefined') return
-
 ReactDOM.render(
   // <React.StrictMode>
     <App />,
