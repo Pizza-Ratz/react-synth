@@ -1,5 +1,4 @@
 import * as Tone from 'tone'
-import {Transport} from 'tone/build/esm/core/clock/Transport'
 import { patterns } from './Patterns'
 
 /**
@@ -50,9 +49,8 @@ export class SynthPad1 extends Tone.DuoSynth {
     this.noteIndex = 0
 
     this.efx = {
-      dist: new Tone.Distortion(0),
+      distortion: new Tone.Distortion(0),
       delay: new Tone.FeedbackDelay("8n.", 0.3),
-      volume: new Tone.Volume(0),
       pan: new Tone.Panner({ 
         pan: 0 
       }),
@@ -66,22 +64,33 @@ export class SynthPad1 extends Tone.DuoSynth {
     this.efx.delay.wet.value = 0.2;
     this.noteIndex = 0;
     this.playing = false;
+    this.volume = new Tone.Volume()
 
-    this.chain(this.efx.gain, this.efx.dist, this.efx.delay, this.efx.reverb, this.efx.pan);
+    this.chain(this.efx.gain, this.efx.dist, this.efx.delay, this.efx.reverb, this.efx.pan, this.volume);
 
-    this.transport = options.transport || new Transport()
-    this.transport.scheduleRepeat((time) => {
-      this.repeater(time);
-    }, "8n");  
+    this.transport = options.transport || Tone.getTransport()
   }
 
-  repeater = (time) => {
+  repeater(time) {
+    if (this.pleaseStop) {
+      this.pleaseStop = false
+      return
+    }
     let note = this.pattern[this.noteIndex % this.pattern.length];
     this.triggerAttackRelease(note, "8n", time);
     this.noteIndex++;
   }
   
-  start = () => this.transport.start()
-  stop = () => this.transport.stop()
-  pause = () => this.transport.pause()
+  start() {
+    this.pleaseStop = false
+    this.noteIndex = 0
+    this.nextEvent = this.transport.scheduleRepeat((time) => {
+      this.repeater(time);
+    }, "8n");
+  }
+
+  stop() {
+    this.pleaseStop = true
+    if (this.nextEvent) this.transport.cancel(this.nextEvent)
+  }
 }

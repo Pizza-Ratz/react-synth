@@ -81,18 +81,28 @@ export class SynthPluck1 extends Tone.PolySynth {
     this.chain(this.efx.gain, this.efx.dist, this.efx.delay, this.efx.reverb, this.efx.pan);
 
     this.transport = options.transport || Tone.getTransport()
-    this.transport.scheduleRepeat((time) => {
-      this.repeater(time);
-    }, "16n.");  
   }
 
-  repeater = (time) => {
+  repeater(time) {
+    if (this.pleaseStop) {
+      this.pleaseStop = false
+      return
+    }
     let note = this.pattern[this.noteIndex % this.pattern.length];
     this.triggerAttackRelease(note, "16n.", time);
     this.noteIndex++;
   }
+  
+  start() {
+    this.pleaseStop = false
+    this.noteIndex = 0
+    this.nextEvent = this.transport.scheduleRepeat((time) => {
+      this.repeater(time);
+    }, "16n.");  
+  }
 
-  start = () => this.transport.start()
-  stop = () => this.transport.stop()
-  pause = () => this.transport.pause()
+  stop() {
+    this.pleaseStop = true
+    if (this.nextEvent) this.transport.cancel(this.nextEvent)
+  }
 }
