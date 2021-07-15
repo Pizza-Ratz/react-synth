@@ -1,94 +1,77 @@
 import * as Tone from 'tone'
+import Transport from 'tone/Tone/core/clock/Transport'
+import patterns from 'Patterns'
 
-/**
- * Kind of a bright FM sound with a gentle attack.
- * 
- * It is an observer of various sorts of messages; subscribing it
- * to a message-producer will cause it to response to midi-esque events
- * (that, as of this writing, have yet to be defined)
- * 
- * @implements Observer
- * @public volume listens for numbers indicating the instrument's volume
- * @public vibrato.amount
- * @public vibrato.rate
- * 
- */
+class SynthPluck3 extends Tone.Synth {
+  constructor(options) {
+    super(Object.assign({
+      transport: new Transport(),
+      pattern: patterns.fantasy,
+      noteIndex: 0,
+      volume: -20,
+      oscillator: {
+        type: 'fmsquare',
+        modulationType: 'sine',
+        modulationIndex: 2,
+        harmonicity: 3
+      },
+      envelope: {
+        attack: 0.05,
+        decay: 0.06,
+        sustain: 0.15,
+        release: 0.1
+      },
+      filter: {
+        Q: 0.3,
+        rolloff: -12,
+        type: "lowpass",
+      },
+      filterEnvelope: {
+        octaves: 5,
+        baseFrequency: 200,
+        attack: 0.13,
+        decay: 0,
+        sustain: 0.5,
+        release: 0.15,
+      },
+    }, options))
 
-const synthPluck3 = function () {
-  // called when subscribed to a message source
-  this.next = message => console.warn('ignoring message', message)
+    this.efx = {
+      autoFilter: new Tone.AutoFilter('1n'),
+      dist: new Tone.Distortion(0.05),
+      delay: new Tone.FeedbackDelay("8n.", 0.3),
+      volume: new Tone.Volume(0),
+      pan: new Tone.Panner({ 
+        pan: 0 
+      }),
+      reverb: new Tone.Freeverb({
+        dampening: 400,
+        roomSize: 0.8,
+        wet: 0.16,
+      }),
+      gain: new Tone.Gain(0.1),
+    }
+    this.efx.delay.wet.value = 0.165;
+    this.noteIndex = 0;
+    this.playing = false;
 
-  this.synth = new Tone.Synth({
-    oscillator: {
-      type: 'fmsquare',
-      modulationType: 'sine',
-      modulationIndex: 2,
-      harmonicity: 3
-    },
-    envelope: {
-      attack: 0.05,
-      decay: 0.06,
-      sustain: 0.15,
-      release: 0.1
-    },
-    filter: {
-      Q: 0.3,
-      rolloff: -6,
-      type: "lowpass",
-    },
-    filterEnvelope: {
-      octaves: 5,
-      baseFrequency: 200,
-      attack: 0.13,
-      decay: 0,
-      sustain: 0.5,
-      release: 0.15,
-    },
-  })
+    this.chain(...this.efx, Tone.Destination);
 
-  // gain goes from -7db - +3d
-  this.volume = {
-    control: {
-      next: (val) => this.synth.volume.value = val
-    },
-  }
-  Object.defineProperty(this.volume, 'value', {
-    get: () => this.synth.volume.value,
-    set: (val) => this.synth.volume.value = val
-  })
-
-  const autoFilter = new Tone.AutoFilter('1n');
-  const dist = new Tone.Distortion(0.05);
-  const delay = new Tone.FeedbackDelay("8n.", 0.4);
-  delay.wet.value = 0.165;
-  const vol = new Tone.Volume(0);
-  const panner = new Tone.Panner({ pan: 0 });
-  const verb = new Tone.Freeverb({
-    dampening: 400,
-    roomSize: 0.8,
-    wet: 0.16,
-  });
-  const gain = new Tone.Gain(0.1);
-
-  this.synth.chain(gain, dist, autoFilter, delay, verb, vol, panner, Tone.Destination);
-
-  // const cMinor7 = ["C4", "D#4", "G4", "A#4", "G4", "D#4"];
-  const fantasy = ["C3", "D3", "E3", "G3", "C4", "D4", "E4", "G4", "C5", "G4", "E4", "D4", "C4", "G3", "E3", "D3", "C3", "D3", "E3", "G3", "C4", "D4", "E4", "G4", "C5", "G4", "E4", "D4", "C4", "G3", "E3", "D3", "A2", "B2", "C3", "E3", "A3", "B3", "C4", "E4", "A4", "E4", "C4", "B3", "A3", "E3", "C3", "B2", "A2", "B2", "C3", "E3", "A3", "B3", "C4", "E4", "A4", "E4", "C4", "B3", "A3", "E3", "C3", "B2"];
-  let notes = fantasy;
-  let noteIndex = 0;
-
-  const repeater = (time) => {
-    let note = notes[noteIndex % notes.length];
-    this.synth.triggerAttackRelease(note, "8n", time);
-    noteIndex++;
+    this.transport = this.transport || new Transport()
+    this.transport.scheduleRepeat((time) => {
+      this.repeater(time);
+    }, "8n");  
   }
 
-  Tone.Transport.bpm.value = 160;
-  Tone.Transport.scheduleRepeat((time) => {
-    repeater(time);
-  }, "8n");
+  repeater = (time) => {
+    let note = this.pattern[this.noteIndex % this.pattern.length];
+    this.triggerAttackRelease(note, "8n", time);
+    this.noteIndex++;
+  }
 
-  return this
+  start = () => this.transport.start()
+  stop = () => this.transport.stop()
+  pause = () => this.transport.pause()
 }
 
-export default synthPluck3
+export default SynthPluck3;

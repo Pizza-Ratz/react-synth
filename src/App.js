@@ -1,7 +1,9 @@
 import React from 'react'
 import './App.scss';
 import * as Tone from 'tone'
-import { Components, Lib } from './index.mjs'
+import { Knob, Fader, Switch, TransportControls } from './components'
+import SynthPad1 from './components/SynthPad1';
+import SynthPluck1 from './components/SynthPluck1';
 
 function App() {
   const [started, setStarted] = React.useState(false);
@@ -23,7 +25,7 @@ function App() {
         <Fader />
         <Switch />
         <SynthPad1 />
-        <SynthPad2 />
+        <SynthPluck1 />
       </main>
     </div>
   );
