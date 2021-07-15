@@ -28,19 +28,18 @@ export class FMDrone extends Tone.PolySynth {
     }, options))
 
     this.efx = {
-      reverb: new Tone.Reverb({ decay: playSeconds / 4, wet: 0.8 })
-    }
-    this.efx.reverb.generate()
-  
-    this.chain(
-      new Tone.Chorus({ frequency: 0.33, depth: 0.7, wet: 0.85 }),
-      new Tone.FeedbackDelay({
+      reverb: new Tone.Reverb({ decay: playSeconds / 4, wet: 0.8 }),
+      chorus: new Tone.Chorus({ frequency: 0.33, depth: 0.7, wet: 0.85 }),
+      feedbackDelay: new Tone.FeedbackDelay({
         delayTime: playSeconds / 16,
         feedback: 0.33,
         wet: 0.66
       }),
-      this.efx.reverb
-    );
+    }
+    this.efx.reverb.generate()
+    this.volume = new Tone.Volume()
+  
+    this.chain(this.efx.chorus, this.efx.feedbackDelay, this.efx.reverb, this.volume)
   }
 
   play(notes, playSeconds, tailSeconds) {
@@ -63,26 +62,6 @@ export class FMBells extends Tone.PolySynth {
   constructor() {
     super(5, Tone.FMSynth)
 
-    this.efx = {
-      delay: new Tone.FeedbackDelay({
-        delayTime: playSeconds / 8,
-        feedback: 0.88,
-        wet: 0.66
-      }),
-      flanger: new Tone.FeedbackDelay({
-        delayTime: 0.005,
-        feedback: 0.1,
-        wet: 0.33
-      }),
-      reverb: new Tone.Reverb({ 
-        decay: playSeconds / 4, 
-        wet: 0.8 
-      }),
-      flangerLFO: new Tone.LFO(1, 0.003, 0.007)
-    }
-    this.efx.reverb.generate()
-    this.efx.flangerLFO.start().connect(this.efx.flanger.delayTime)
-    
     this.set({
       harmonicity: 1.4,
       modulationIndex: 1,
@@ -104,6 +83,28 @@ export class FMBells extends Tone.PolySynth {
       },
       volume: -30
     })
+
+    this.efx = {
+      delay: new Tone.FeedbackDelay({
+        delayTime: playSeconds / 8,
+        feedback: 0.88,
+        wet: 0.66
+      }),
+      flanger: new Tone.FeedbackDelay({
+        delayTime: 0.005,
+        feedback: 0.1,
+        wet: 0.33
+      }),
+      reverb: new Tone.Reverb({ 
+        decay: playSeconds / 4, 
+        wet: 0.8 
+      }),
+      flangerLFO: new Tone.LFO(1, 0.003, 0.007)
+    }
+    this.efx.reverb.generate()
+    this.efx.flangerLFO.start().connect(this.efx.flanger.delayTime)
+    this.volume = new Tone.Volume()
+    this.chain(this.efx.flanger, this.efx.delay, this.efx.reverb, this.volume)
   }
 
   play(notes, playSeconds, tailSeconds) {
@@ -153,6 +154,8 @@ export class DroneMaker extends Instrument {
   
     this.patternCtrl = new Tone.CtrlPattern([0, 1, 2, 3], "random");
     this.timeCtrl = new Tone.CtrlRandom(6, 18);
+    this.volume = new Tone.Volume()
+    this.chain(this.volume)
 
     return this
   }
@@ -173,11 +176,14 @@ export class DroneMaker extends Instrument {
       new Tone.BufferSource({ buffer: bellBuffer, playbackRate: 0.125 })
         .connect(this.output)
         .start(time);
-      return this.transport.scheduleOnce(next, "+" + timeCtrl.value);
+      this.nextEvent = this.transport.scheduleOnce(next, "+" + timeCtrl.value);
     }
 
     return next(Tone.now());
   }
 
-  stop() { this.pleaseStop = true }
+  stop() { 
+    this.pleaseStop = true
+    if (this.nextEvent) this.transport.cancel(this.nextEvent)
+  }
 }

@@ -1,5 +1,4 @@
 import * as Tone from 'tone'
-import { Transport } from 'tone/build/esm/core/clock/Transport'
 import { patterns } from './Patterns'
 
 /**
@@ -35,7 +34,6 @@ class SynthPad2 extends Tone.PolySynth {
     this.efx = {
       distortion: new Tone.Distortion(0),
       delay: new Tone.FeedbackDelay("4n", 0.88),
-      volume: new Tone.Volume(0),
       pan: new Tone.Panner({ 
         pan: 0 
       }),
@@ -44,7 +42,7 @@ class SynthPad2 extends Tone.PolySynth {
         depth: 0.8, 
         wet: 0.8 ,
       }),
-      verb: new Tone.Freeverb({
+      reverb: new Tone.Freeverb({
         dampening: 12000,
         roomSize: 0.95,
         wet: 0.2,
@@ -63,28 +61,40 @@ class SynthPad2 extends Tone.PolySynth {
       }),
       gain: new Tone.Gain(1),
     }
+    this.volume = new Tone.Volume()
     this.delay.wet.value = 0.33;
+    this.chain(this.efx.gain, this.volume);
+
     this.noteIndex = 0;
     this.playing = false;
+    this.volume = 
 
-    this.chain(...this.efx, Tone.Destination);
-
-    this.transport = this.transport || new Transport()
-    this.transport.bpm.value = 40;
-    this.transport.scheduleRepeat((time) => {
+    this.transport = options.transport || Tone.getTransport()
+    if (!options.transport) this.transport.bpm.value = 40;
+  }
+  
+  repeater(time) {
+    if (this.pleaseStop) {
+      this.pleaseStop = false
+      return
+    }
+    let note = this.pattern[this.noteIndex % this.pattern.length];
+    this.triggerAttackRelease(note, "4n", time);
+    this.noteIndex++;
+  }
+  
+  start() {
+    this.pleaseStop = false
+    this.noteIndex = 0
+    this.nextEvent = this.transport.scheduleRepeat((time) => {
       this.repeater(time);
     }, "4n");
   }
-  
-  repeater = (time) => {
-      let note = this.pattern[this.noteIndex % this.pattern.length];
-      this.triggerAttackRelease(note, "4n", time);
-      this.noteIndex++;
+
+  stop() {
+    this.pleaseStop = true
+    if (this.nextEvent) this.transport.cancel(this.nextEvent)
   }
-  
-  start = () => this.transport.start()
-  stop = () => this.transport.stop()
-  pause = () => this.transport.pause()
 }
 
 export default SynthPad2

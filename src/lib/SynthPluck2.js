@@ -1,12 +1,9 @@
 import * as Tone from 'tone'
-import {Transport} from 'tone/build/esm/core/clock/Transport'
 import { patterns } from './Patterns'
 
 class SynthPluck2 extends Tone.MonoSynth {
   constructor(options) {
     super(Object.assign({
-      transport: new Transport(),
-      pattern: patterns.fantasy,
       noteIndex: 0,
       volume: -20,
       oscillator: {
@@ -35,9 +32,8 @@ class SynthPluck2 extends Tone.MonoSynth {
     }, options))
 
     this.efx = {
-      dist: new Tone.Distortion(0),
+      distortion: new Tone.Distortion(0),
       delay: new Tone.FeedbackDelay("8n.", 0.3),
-      volume: new Tone.Volume(0),
       pan: new Tone.Panner({ 
         pan: 0 
       }),
@@ -49,26 +45,39 @@ class SynthPluck2 extends Tone.MonoSynth {
       gain: new Tone.Gain(1),
     }
     this.efx.delay.wet.value = 0.2;
+    this.chain(this.efx.gain, this.efx.distortion, this.efx.delay, this.efx.reverb);
+
+
+    this.pattern = options.pattern || patterns.fantasy
     this.noteIndex = 0;
     this.playing = false;
 
-    this.chain(...this.efx, Tone.Destination);
-
-    this.transport = this.transport || new Transport()
-    this.transport.scheduleRepeat((time) => {
-      this.repeater(time);
-    }, "8n");  
+    this.transport = this.transport || Tone.getTransport()
   }
 
-  repeater = (time) => {
+  repeater(time) {
+    if (this.pleaseStop) {
+      this.pleaseStop = false
+      return
+    }
     let note = this.pattern[this.noteIndex % this.pattern.length];
     this.triggerAttackRelease(note, "8n", time);
     this.noteIndex++;
   }
 
-  start = () => this.transport.start()
-  stop = () => this.transport.stop()
-  pause = () => this.transport.pause()
+  start() {
+    this.pleaseStop = false
+    this.noteIndex = 0
+    this.nextEvent = this.transport.scheduleRepeat((time) => {
+      this.repeater(time);
+    }, "8n");  
+    this.transport.start()
+  }
+
+  stop() {
+    this.pleaseStop = true
+    if (this.nextEvent) this.transport.cancel(this.nextEvent)
+  }
 }
 
 export default SynthPluck2;

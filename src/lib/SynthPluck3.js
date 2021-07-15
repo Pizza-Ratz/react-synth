@@ -5,8 +5,6 @@ import { patterns } from './Patterns'
 class SynthPluck3 extends Tone.Synth {
   constructor(options) {
     super(Object.assign({
-      transport: new Transport(),
-      pattern: patterns.fantasy,
       noteIndex: 0,
       volume: -20,
       oscillator: {
@@ -40,7 +38,6 @@ class SynthPluck3 extends Tone.Synth {
       autoFilter: new Tone.AutoFilter('1n'),
       dist: new Tone.Distortion(0.05),
       delay: new Tone.FeedbackDelay("8n.", 0.3),
-      volume: new Tone.Volume(0),
       pan: new Tone.Panner({ 
         pan: 0 
       }),
@@ -55,23 +52,35 @@ class SynthPluck3 extends Tone.Synth {
     this.noteIndex = 0;
     this.playing = false;
 
-    this.chain(...this.efx, Tone.Destination);
+    this.chain(this.efx.gain, this.efx.autoFilter, this.efx.delay, this.efx.pan, this.efx.reverb);
 
-    this.transport = this.transport || new Transport()
-    this.transport.scheduleRepeat((time) => {
-      this.repeater(time);
-    }, "8n");  
+    this.pattern = options.pattern || patterns.fantasy
+    this.transport = options.transport || Tone.getTransport()
   }
 
-  repeater = (time) => {
+  repeater(time) {
+    if (this.pleaseStop) {
+      this.pleaseStop = false
+      return
+    }
     let note = this.pattern[this.noteIndex % this.pattern.length];
     this.triggerAttackRelease(note, "8n", time);
     this.noteIndex++;
   }
 
-  start = () => this.transport.start()
-  stop = () => this.transport.stop()
-  pause = () => this.transport.pause()
+  start() {
+    this.pleaseStop = false
+    this.noteIndex = 0
+    this.nextEvent = this.transport.scheduleRepeat((time) => {
+      this.repeater(time);
+    }, "8n");    
+    this.transport.start()
+  }
+
+  stop() {
+    this.pleaseStop = true
+    if (this.nextEvent) this.transport.cancel(this.nextEvent)
+  }
 }
 
 export default SynthPluck3;
