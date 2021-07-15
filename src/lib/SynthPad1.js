@@ -65,7 +65,7 @@ export class SynthPad1 extends Tone.DuoSynth {
     this.noteIndex = 0;
     this.playing = false;
 
-    this.chain(this.efx.gain, this.efx.dist, this.efx.delay, this.efx.reverb, this.efx.pan);
+    this.chain(this.efx.gain, this.efx.distortion, this.efx.delay, this.efx.reverb, this.efx.pan);
 
     this.transport = options.transport || Tone.getTransport()
   }
