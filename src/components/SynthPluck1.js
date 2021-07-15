@@ -25,6 +25,7 @@ const SynthPluck1 = () => {
 
   React.useEffect(() => {
     synth.toDestination()
+    synth.start()
   }, [synth])
 
   return (
