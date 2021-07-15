@@ -59,7 +59,7 @@ export class SynthPad1 extends Tone.DuoSynth {
       reverb: new Tone.Freeverb({
         dampening: 600,
         roomSize: 0.9,
-        wet: 0.05,
+        wet: 0.3,
       }),
       gain: new Tone.Gain(1),
     }
@@ -67,7 +67,7 @@ export class SynthPad1 extends Tone.DuoSynth {
     this.noteIndex = 0;
     this.playing = false;
 
-    this.chain(...Object.values(this.efx));
+    this.chain(this.efx.gain, this.efx.dist, this.efx.delay, this.efx.reverb, this.efx.pan);
 
     this.transport = options.transport || new Transport()
     this.transport.scheduleRepeat((time) => {
