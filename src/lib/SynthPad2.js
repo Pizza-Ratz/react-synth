@@ -61,13 +61,11 @@ class SynthPad2 extends Tone.PolySynth {
       }),
       gain: new Tone.Gain(1),
     }
-    this.volume = new Tone.Volume()
     this.delay.wet.value = 0.33;
-    this.chain(this.efx.gain, this.volume);
+    this.chain(this.efx.gain);
 
     this.noteIndex = 0;
     this.playing = false;
-    this.volume = 
 
     this.transport = options.transport || Tone.getTransport()
     if (!options.transport) this.transport.bpm.value = 40;
