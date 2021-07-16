@@ -24,7 +24,7 @@ const SynthPluck1 = () => {
   }))
 
   React.useEffect(() => {
-    synth.toDestination()
+    synth.chain(synth.efx.gain, synth.efx.vibrato, synth.efx.dist, synth.efx.autoFilter, synth.efx.pan, synth.efx.delay, synth.efx.reverb, Tone.Destination)
     synth.start()
   }, [synth])
 
@@ -33,18 +33,27 @@ const SynthPluck1 = () => {
       <h3>Synth Pluck 1</h3>
       <Fader
         range={{ min: [0], max: [100000] }}
+        start={[synth.volume.value]}
         pips={{}}
         onValueChange={(val) => synth.volume.value = scaleGain(val)}
         tooltips={false}
         label='Volume' />
       <hr />
-      {/* <Fader
-        range={{ min: [0], max: [1] }}
+      <Fader
+        range={{ min: [0], max: [1]}}
+        start={[synth.efx.reverb.wet.value]}
+        step={0.01}
         pips={{}}
-        onValueChange={(val) => synth.efx.reverb.wet.value = scaleGain(val)}
+        onValueChange={(val) => synth.efx.reverb.wet.value = (val)}
         tooltips={false}
-        label='Reverb' /> */}
-      <Knob min={300} max={3000} step={100} onValueChange={(val) => synth.efx.autoFilter.baseFrequency = val} label="Filter 1" />
+        label='Reverb' />
+      <Knob 
+        min={100} 
+        max={3000} 
+        step={1} 
+        value={[synth.efx.autoFilter.baseFrequency]}
+        onValueChange={(val) => synth.efx.autoFilter.baseFrequency = val} 
+        label="Filter" />
     </div>
   )
 }

@@ -37,7 +37,8 @@ export class SynthPluck1 extends Tone.PolySynth {
     this.set({
       oscillator: {
         type: "pwm",
-        modulationFrequency: 0.3
+        modulationFrequency: 0.2,
+        width: 0.5
       },
       envelope: {
         attack: 0.07,
@@ -55,50 +56,56 @@ export class SynthPluck1 extends Tone.PolySynth {
       },
       filterEnvelope: {
         attack: 0.3,
-        baseFrequency: 300,
+        baseFrequency: 500,
         decay: 0.4,
         exponent: 2,
         octaves: 3,
         release: 0.7,
         sustain: 0.07,
-      }
+      },
     })
-    this.pattern = options.pattern || patterns.eternity
+    this.pattern = options.pattern || patterns.prelude
     this.noteIndex = 0
 
     this.efx = {
-      dist: new Tone.Distortion(0),
+      dist: new Tone.Distortion(0.4),
       delay: new Tone.FeedbackDelay({
-        duration: "8n.", 
-        feedback: 0.5, 
-        wet: 1
+        duration: "8n", 
+        feedback: 0.45, 
+        wet: 0.3
       }),
       pan: new Tone.Panner({ 
         pan: 0 
       }),
       reverb: new Tone.Freeverb({
-        dampening: 12000,
+        dampening: 10000,
         roomSize: 0.8,
-        wet: 0.15
+        wet: 0.17
       }),
       autoFilter: new Tone.AutoFilter({
-        frequency : '8n' ,
+        frequency : '16n' ,
         type : 'sine' ,
         depth : 1,
-        baseFrequency : 1100,
-        octaves : 3.6 ,
+        baseFrequency : 580,
+        octaves : 4 ,
         filter : {
           type : 'lowpass' ,
-          rolloff : -12 ,
-          Q : 4
-        }
+          rolloff : -24 ,
+          Q : 3.6
+        },
       }),
-      gain: new Tone.Gain(1),
+      vibrato: new Tone.Vibrato({
+        maxDelay : 0.002 ,
+        frequency : 7.5,
+        depth : 0.16,
+        type : "sine"
+      }),
+      gain: new Tone.Gain(0.2),
     }
     this.noteIndex = 0;
     this.playing = false;
 
-    this.chain(this.efx.gain, this.efx.dist, this.efx.autoFilter, this.efx.pan, this.efx.delay, this.efx.reverb, Tone.Destination);
+    // this.chain(this.efx.gain, this.efx.dist, this.efx.autoFilter, this.efx.pan, this.efx.delay, this.efx.reverb);
 
     this.transport = options.transport || Tone.getTransport()
   }

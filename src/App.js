@@ -24,7 +24,7 @@ function App() {
         <Knob />
         <Fader />
         <Switch />
-        <SynthPad1 />
+        {/* <SynthPad1 /> */}
         <SynthPluck1 />
       </main>
     </div>
