@@ -55,12 +55,7 @@ const SynthPluck1 = () => {
           min={100}
           max={3000}
           value={[synth.efx.autoFilter.baseFrequency]}
-          onChange={(val) => {
-            // const freq = Tone.Frequency(val);
-            // console.log(freq);
-            synth.efx.autoFilter.baseFrequency = val;
-            console.log(`frequency -> ${synth.efx.autoFilter.baseFrequency}`);
-          }}
+          onChange={(val) => (synth.efx.autoFilter.baseFrequency = val)}
         >
           <label>cutoff</label>
         </Knob>
@@ -79,7 +74,7 @@ const SynthPluck1 = () => {
         min={0}
         max={100}
         value={15}
-        onChange={(val) => (synth.efx.reverb.wet.value = val / 100)}
+        onChange={(val) => (synth.efx.reverb.wet.value = Math.abs(val / 100))}
       >
         <label>reverb</label>
       </Knob>
