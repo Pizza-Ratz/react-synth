@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import * as Tone from "tone";
 import { SynthPluck1 as SynthPluck1Inst } from "../lib/SynthPluck1";
 import Fader from "./Fader";
-import Knob from "./Dial";
+import Dial from "./Dial";
 import ControlGroup from "./ControlGroup";
 import "../styles/SynthPluck1.scss";
 
@@ -51,33 +51,33 @@ const SynthPluck1 = () => {
       />
       <hr />
       <ControlGroup label="filter">
-        <Knob
+        <Dial
           min={100}
           max={3000}
-          value={[synth.efx.autoFilter.baseFrequency]}
+          value={synth.efx.autoFilter.baseFrequency}
           onChange={(val) => (synth.efx.autoFilter.baseFrequency = val)}
         >
           <label>cutoff</label>
-        </Knob>
-        <Knob
+        </Dial>
+        <Dial
           min={0}
           max={100}
-          value={[synth.efx.autoFilter.depth.value]}
+          value={synth.efx.autoFilter.depth.value}
           onChange={(val) =>
             (synth.efx.autoFilter.depth.value = Math.abs(val / 100))
           }
         >
           <label>depth</label>
-        </Knob>
+        </Dial>
       </ControlGroup>
-      <Knob
+      <Dial
         min={0}
         max={100}
-        value={15}
+        value={synth.efx.reverb.wet.value}
         onChange={(val) => (synth.efx.reverb.wet.value = Math.abs(val / 100))}
       >
         <label>reverb</label>
-      </Knob>
+      </Dial>
     </div>
   );
 };
