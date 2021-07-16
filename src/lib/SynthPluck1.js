@@ -63,7 +63,7 @@ export class SynthPluck1 extends Tone.PolySynth {
         sustain: 0.07,
       }
     })
-    this.pattern = options.pattern || patterns.suite
+    this.pattern = options.pattern || patterns.eternity
     this.noteIndex = 0
 
     this.efx = {
