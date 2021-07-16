@@ -20,7 +20,7 @@ function App() {
       <header className="App-header">Kitchen Sink</header>
       <main>
         <TransportControls />
-        {/* <SynthPad1 /> */}
+        <SynthPad1 />
         <SynthPluck1 />
       </main>
     </div>
