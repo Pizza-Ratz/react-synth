@@ -43,7 +43,7 @@ const SynthPluck1 = () => {
       <h3>Synth Pluck 1</h3>
       <Fader
         range={{ min: [0], max: [100000] }}
-        start={[synth.volume.value]}
+        start={synth.volume.value}
         pips={{}}
         onValueChange={(val) => (synth.volume.value = scaleGain(val))}
         tooltips={false}
@@ -54,29 +54,37 @@ const SynthPluck1 = () => {
         <Knob
           min={100}
           max={3000}
-          value={[synth.efx.autoFilter.baseFrequency]}
+          value={synth.efx.autoFilter.baseFrequency}
           onChange={(val) => (synth.efx.autoFilter.baseFrequency = val)}
         >
           <label>cutoff</label>
         </Knob>
         <Knob
           min={0}
-          max={100}
-          value={[synth.efx.autoFilter.depth.value]}
+          max={1000}
+          value={synth.efx.autoFilter.filter.Q.value}
           onChange={(val) =>
-            (synth.efx.autoFilter.depth.value = Math.abs(val / 100))
+            (synth.efx.autoFilter.filter.Q.value = Math.abs(val / 100))
           }
         >
-          <label>depth</label>
+          <label>Q</label>
         </Knob>
       </ControlGroup>
       <Knob
         min={0}
         max={100}
-        value={15}
+        value={synth.efx.reverb.wet.value}
         onChange={(val) => (synth.efx.reverb.wet.value = Math.abs(val / 100))}
       >
         <label>reverb</label>
+      </Knob>
+      <Knob
+        min={0}
+        max={100}
+        value={synth.efx.delay.feedback.value}
+        onChange={(val) => (synth.efx.delay.feedback.value = Math.abs(val / 100))}
+      >
+        <label>delay feedback</label>
       </Knob>
     </div>
   );
