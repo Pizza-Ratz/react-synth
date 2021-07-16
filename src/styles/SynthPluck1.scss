@@ -10,8 +10,16 @@
   align-content: center;
   justify-content: center;
 
+  .dial-container {
+    margin: 0 5px;
+  }
+
+  label {
+    @include text.label;
+  }
+
   h3 {
-    @include text.label
+    @include text.label;
   }
 
   hr {

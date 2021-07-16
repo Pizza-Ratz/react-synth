@@ -1,9 +1,10 @@
-import React from 'react'
-import './App.scss';
-import * as Tone from 'tone'
-import { Knob, Fader, Switch, TransportControls } from './components'
-import SynthPad1 from './components/SynthPad1';
-import SynthPluck1 from './components/SynthPluck1';
+import React from "react";
+import "./App.scss";
+import * as Tone from "tone";
+import { Knob, Fader, Switch, TransportControls } from "./components";
+import SynthPad1 from "./components/SynthPad1";
+import SynthPluck1 from "./components/SynthPluck1";
+import Drone from "./components/DroneMaker";
 
 function App() {
   const [started, setStarted] = React.useState(false);
@@ -12,18 +13,13 @@ function App() {
     if (started) return;
     setStarted(true);
     Tone.start();
-  })
+  });
 
   return (
     <div className="App">
-      <header className="App-header">
-        Kitchen Sink
-      </header>
+      <header className="App-header">Kitchen Sink</header>
       <main>
         <TransportControls />
-        <Knob />
-        <Fader />
-        <Switch />
         {/* <SynthPad1 /> */}
         <SynthPluck1 />
       </main>
