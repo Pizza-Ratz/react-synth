@@ -4,6 +4,7 @@ import { Channel } from "tone";
 // import Fader from "./Fader";
 import Dial from "./Dial";
 import Slider from "./Slider";
+import "../styles/controls/ChannelStrip.scss";
 
 const VOL_SCALING_FACTOR = 10000;
 const valToDecibels = (val) => (Math.abs(val % 100) - 100) * VOL_SCALING_FACTOR;

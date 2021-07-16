@@ -86,7 +86,6 @@ input[type="range"] {
   padding: 0;
   width: $track-w;
   height: $input-h;
-  transform: rotate(90deg);
   background: repeating-linear-gradient(
         90deg,
         $ruler-line-c,

@@ -16,7 +16,9 @@
     font-weight: bolder;
   }
 
-  .fader {
+  .slider-container {
     height: 15em;
+    width: 5em;
+    transform: rotate(90deg) translateY(5.6em) translateX(-5.6em);
   }
 }
