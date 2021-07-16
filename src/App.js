@@ -4,11 +4,9 @@ import * as Tone from "tone";
 import { ChannelStrip, TransportControls } from "./components";
 import SynthPad1 from "./components/SynthPad1";
 import SynthPluck1 from "./components/SynthPluck1";
-import Drone from "./components/DroneMaker";
 
 function App() {
   const [started, setStarted] = React.useState(false);
-  const [masterVolume] = React.useState(new Tone.Channel())
 
   document.documentElement.addEventListener("mousedown", () => {
     if (started) return;
@@ -21,6 +19,7 @@ function App() {
       <header className="App-header">Kitchen Sink</header>
       <main>
         <TransportControls />
+        <ChannelStrip label="Master" />
         <SynthPad1 />
         <SynthPluck1 />
       </main>

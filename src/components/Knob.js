@@ -1,6 +1,6 @@
 import React from "react";
-import { Silver } from 'react-dial-knob'
-import '../styles/Knob.scss'
+import { Silver } from "react-dial-knob";
+import "../styles/controls/Knob.scss";
 
 const Knob = ({
   diameter = 70,
@@ -9,11 +9,11 @@ const Knob = ({
   step = 1,
   jumpLimit = 0.1,
   value = 0,
-  label = 'title',
-  onValueChange = () => { }
+  label = "title",
+  onValueChange = () => {},
 }) => {
-  const [snowflake] = React.useState(Math.floor(Math.random() * 1000))
-  let val = 0
+  const [snowflake] = React.useState(Math.floor(Math.random() * 1000));
+  let val = 0;
 
   return (
     <div className="knob-container">
@@ -24,14 +24,14 @@ const Knob = ({
         step={step}
         // value={}
         jumpLimit={jumpLimit}
-        className='knob'
+        className="knob"
         onValueChange={onValueChange}
         ariaLabelledBy={`knob-label-${snowflake}`}
         spaceMaxFromZero={true}
       />
       <label id={`knob-label-${snowflake}`}>{label}</label>
     </div>
-  )
-}
+  );
+};
 
-export default Knob
+export default Knob;

@@ -39,10 +39,8 @@ const SynthPad1 = () => {
     <div className={`synth-pad-1`}>
       <h3>Synth Pad 1</h3>
       <Fader
-        range={{ min: [0], max: [100000] }}
-        pips={{}}
-        onValueChange={(val) => (synth.volume.value = scaleGain(val))}
-        tooltips={false}
+        range={{ min: [0], max: [1000] }}
+        onValueChange={(val) => (synth.volume.value = scaleGain(val * 10))}
         label="Volume"
       />
       <hr />
@@ -51,9 +49,7 @@ const SynthPad1 = () => {
         max={100}
         val={synth.efx.gain.gain.value}
         color={false}
-        onChange={(val) =>
-          synth.efx.gain.gain.value = val / 100
-        }
+        onChange={(val) => (synth.efx.gain.gain.value = val / 100)}
       >
         <label>pre-efx gain</label>
       </Dial>

@@ -1,0 +1,22 @@
+@use "../materials";
+@use "../text";
+
+.channel-strip {
+  @include materials.base-plate;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  label {
+    @include text.label;
+  }
+
+  & > label {
+    font-weight: bolder;
+  }
+
+  .fader {
+    height: 15em;
+  }
+}
