@@ -68,7 +68,11 @@ export class SynthPluck1 extends Tone.PolySynth {
 
     this.efx = {
       dist: new Tone.Distortion(0),
-      delay: new Tone.FeedbackDelay("8n.", 0.45),
+      delay: new Tone.FeedbackDelay({
+        duration: "8n.", 
+        feedback: 0.5, 
+        wet: 1
+      }),
       pan: new Tone.Panner({ 
         pan: 0 
       }),
@@ -81,7 +85,7 @@ export class SynthPluck1 extends Tone.PolySynth {
         frequency : '8n' ,
         type : 'sine' ,
         depth : 1,
-        baseFrequency : 500,
+        baseFrequency : 1100,
         octaves : 3.6 ,
         filter : {
           type : 'lowpass' ,
@@ -91,7 +95,6 @@ export class SynthPluck1 extends Tone.PolySynth {
       }),
       gain: new Tone.Gain(1),
     }
-    this.efx.delay.wet.value = 1;
     this.noteIndex = 0;
     this.playing = false;
 

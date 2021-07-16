@@ -38,7 +38,13 @@ const SynthPluck1 = () => {
         tooltips={false}
         label='Volume' />
       <hr />
-      {/* <Knob min={300} max={3000} step={100} onValueChange={(val) => synth.filterEnvelope.baseFrequency = val} label="Filter 1" /> */}
+      {/* <Fader
+        range={{ min: [0], max: [1] }}
+        pips={{}}
+        onValueChange={(val) => synth.efx.reverb.wet.value = scaleGain(val)}
+        tooltips={false}
+        label='Reverb' /> */}
+      <Knob min={300} max={3000} step={100} onValueChange={(val) => synth.efx.autoFilter.baseFrequency = val} label="Filter 1" />
     </div>
   )
 }
