@@ -1,4 +1,5 @@
-import { Listener, Panner3D } from 'tone'
+
+import { Listener, Panner3D, Context } from 'tone'
 
 export default class ThreeSpace {
   constructor(sources = [{
@@ -9,32 +10,38 @@ export default class ThreeSpace {
   }], listener = {lat: 0, lon: 0}) 
   {
     this.sources = sources.reduce((accum, src) => {
-      accum[src.name] = new Panner3D(src.lat, src.lon, 0)
+      source.panner = new Panner3D(src.lat, src.lon, 0)
+      source.instrument.connect(source.panner)
+      accum[src.name] = source
       return accum
     })
     this.listener = Listener(listener.lat, listener.lon, 0)
+    return this
   }
-}
 
-class Source extends ThreeSpace {
-  constructor(sources, listener) {
-    super()
+  // adds a source to the 3-d environment
+  addSource(source = { name: '', instrument: {}, lat: 0, lon: 0}) {
+    source.panner = new Panner3D(source.lat, source.lon, 0)
+    instrument.connect(source.panner)
+    this.sources[source.name] = source
+    return this
   }
-  addSource(source) {
-    const add = new Source(source)
-    return add
-  }
-  removeSource(source) {
-    let remove = source.destroy();
-    return remove;
-  }
-  moveListener(destination) {
 
-    let sourcePosition = [this.sources.lat, this.sources.lon]
-    let listenerPosition = [this.listener.lat, this.listener.lon]
-    
-    listenerPosition = start;
+  removeSource(sourceName) {
+    const source = this.sources[sourceName]
+    if (!source) throw new Error('Source doesn\'t exist')
+    instrument.disconnect(source.panner)
+    source.panner.dispose()
+    delete this.source[sourceName];
+    return this
+  }
 
+  moveListener(destination = [0, 0], tripTime, startTime = Context.now()) {
+    const [ destX, destY ] = destination
+    const dX = destX - Listener.positionX.value
+    const dY = destY - Listener.positionY.value
+    Listener.positionX.rampTo(dX, tripTime, startTime)
+    Listener.positionY.rampTo(dY, tripTime, startTime)
 // use rampTo
 
   
