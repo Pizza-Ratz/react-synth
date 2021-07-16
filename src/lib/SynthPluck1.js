@@ -11,7 +11,7 @@ export class SynthPluck1 extends Tone.PolySynth {
         modulationFrequency: 0.3,
       },
       envelope: {
-        attack: 0.01,
+        attack: 0.02,
         decay: 0.4,
         decayCurve: "exponential",
         sustain: 0,
@@ -37,17 +37,18 @@ export class SynthPluck1 extends Tone.PolySynth {
     this.set({
       oscillator: {
         type: "pwm",
+        modulationFrequency: 0.3
       },
       envelope: {
-        attack: 0.06,
+        attack: 0.07,
         attackCurve: "exponential",
-        decay: 0.4,
+        decay: 0.44,
         decayCurve: "exponential",
         sustain: 0.07,
         release: 0.7,
         releaseCurve: "exponential"
       },
-        filter: {
+      filter: {
         Q: 2,
         rolloff: -24,
         type: "lowpass",
@@ -62,25 +63,25 @@ export class SynthPluck1 extends Tone.PolySynth {
         sustain: 0.07,
       }
     })
-    this.pattern = options.pattern || patterns.prelude
+    this.pattern = options.pattern || patterns.suite
     this.noteIndex = 0
 
     this.efx = {
       dist: new Tone.Distortion(0),
-      delay: new Tone.FeedbackDelay("8n.", 0.5),
+      delay: new Tone.FeedbackDelay("8n.", 0.45),
       pan: new Tone.Panner({ 
         pan: 0 
       }),
       reverb: new Tone.Freeverb({
         dampening: 12000,
         roomSize: 0.8,
-        wet: 0.16
+        wet: 0.15
       }),
       autoFilter: new Tone.AutoFilter({
         frequency : '8n' ,
         type : 'sine' ,
         depth : 1,
-        baseFrequency : 600,
+        baseFrequency : 500,
         octaves : 3.6 ,
         filter : {
           type : 'lowpass' ,
@@ -94,7 +95,7 @@ export class SynthPluck1 extends Tone.PolySynth {
     this.noteIndex = 0;
     this.playing = false;
 
-    this.chain(this.efx.gain, this.efx.dist, this.efx.autoFilter, this.efx.delay, this.efx.reverb, this.efx.pan, Tone.Destination);
+    this.chain(this.efx.gain, this.efx.dist, this.efx.autoFilter, this.efx.pan, this.efx.delay, this.efx.reverb, Tone.Destination);
 
     this.transport = options.transport || Tone.getTransport()
   }
