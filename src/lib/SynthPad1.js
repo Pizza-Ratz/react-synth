@@ -9,7 +9,7 @@ export class SynthPad1 extends Tone.DuoSynth {
     super(
       Object.assign(
         {
-          harmonicity: 1,
+          harmonicity: 0.5,
           volume: -20,
           voice0: {
             oscillator: { type: "sawtooth" },
@@ -50,64 +50,54 @@ export class SynthPad1 extends Tone.DuoSynth {
       )
     );
 
-    this.pattern = options.pattern || patterns.fantasy;
+    this.pattern = options.pattern || patterns.eternity;
     this.noteIndex = 0;
 
     this.efx = {
-      distortion: new Tone.Distortion(0),
-      delay: new Tone.FeedbackDelay("8n.", 0.3),
-      pan: new Tone.Panner({
-        pan: 0,
+      gain: new Tone.Gain(0.2),
+      dist: new Tone.Distortion(0),
+      delay: new Tone.FeedbackDelay({
+        duration: "8n.", 
+        feedback: 0.3,
+        wet: 0.2,
       }),
       reverb: new Tone.Freeverb({
-        dampening: 600,
+        dampening: 2000,
         roomSize: 0.9,
         wet: 0.3,
       }),
-      gain: new Tone.Gain(1),
     };
-    this.efx.delay.wet.value = 0.2;
     this.noteIndex = 0;
     this.playing = false;
+    this.transport = options.transport || Tone.getTransport()
 
-    delete this.volume;
-    delete this.output;
-    this.output = new Tone.Volume(-20);
-    this.volume = this.output.volume;
-
-    this.chain(
-      this.efx.gain,
-      this.efx.distortion,
-      this.efx.delay,
-      this.efx.reverb,
-      this.efx.pan,
-      this.output
-    );
-
-    this.transport = options.transport || Tone.getTransport();
+    return this;
   }
+    // delete this.volume;
+    // delete this.output;
+    // this.output = new Tone.Volume(-20);
+    // this.volume = this.  }
 
-  repeater(time) {
-    if (this.pleaseStop) {
-      this.pleaseStop = false;
-      return;
+    repeater(time) {
+      if (this.pleaseStop) {
+        this.pleaseStop = false;
+        return;
+      }
+      let note = this.pattern[this.noteIndex % this.pattern.length];
+      this.triggerAttackRelease(note, "4n", time);
+      this.noteIndex++;
     }
-    console.log("SynthPad1 playing a note");
-    let note = this.pattern[this.noteIndex % this.pattern.length];
-    this.triggerAttackRelease(note, "8n", time);
-    this.noteIndex++;
+  
+    start() {
+      this.pleaseStop = false;
+      this.noteIndex = 0;
+      this.nextEvent = this.transport.scheduleRepeat((time) => {
+        this.repeater(time);
+      }, "4n");
+    }
+  
+    stop() {
+      this.pleaseStop = true;
+      if (this.nextEvent) this.transport.cancel(this.nextEvent);
+    }
   }
-
-  start() {
-    this.pleaseStop = false;
-    this.noteIndex = 0;
-    this.nextEvent = this.transport.scheduleRepeat((time) => {
-      this.repeater(time);
-    }, "8n");
-  }
-
-  stop() {
-    this.pleaseStop = true;
-    if (this.nextEvent) this.transport.cancel(this.nextEvent);
-  }
-}

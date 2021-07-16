@@ -32,7 +32,7 @@ const SynthPluck1 = () => {
       synth.efx.reverb,
       Tone.Destination
     );
-    synth.start();
+  //  synth.start();
     return () => {
       synth.stop();
     };

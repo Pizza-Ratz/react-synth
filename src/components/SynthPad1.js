@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import * as Tone from "tone";
 import { SynthPad1 as SynthPad1Inst } from "../lib/SynthPad1";
 import Fader from "./Fader";
 import Dial from "./Dial";
@@ -21,9 +22,17 @@ const SynthPad1 = () => {
   const [synth] = React.useState(new SynthPad1Inst());
 
   React.useEffect(() => {
-    synth.toDestination();
+    synth.chain(
+      synth.efx.gain,
+      synth.efx.dist,
+      synth.efx.delay,
+      synth.efx.reverb,
+      Tone.Destination
+    );
     synth.start();
-    return () => synth.stop();
+    return () => {
+      synth.stop();
+    };
   }, [synth]);
 
   return (
@@ -37,17 +46,28 @@ const SynthPad1 = () => {
         label="Volume"
       />
       <hr />
+      <Dial
+        min={0}
+        max={100}
+        val={synth.efx.gain.gain.value}
+        color={false}
+        onChange={(val) =>
+          synth.efx.gain.gain.value = val / 100
+        }
+      >
+        <label>pre-efx gain</label>
+      </Dial>
       <div className="voices">
         <ControlGroup label="Voice 0">
           <ControlGroup label="filterEnv">
             <Dial
               min={0}
-              max={50}
+              max={100}
               val={synth.voice0.filterEnvelope.value}
               color={false}
               onChange={(val) =>
                 synth.voice0.filterEnvelope.set({
-                  baseFrequency: val * 100 + 100,
+                  baseFrequency: Math.abs(val * 100),
                 })
               }
             >
@@ -72,14 +92,16 @@ const SynthPad1 = () => {
               val={synth.voice1.filterEnvelope.value}
               color={false}
               onChange={(val) =>
-                (synth.voice1.filterEnvelope.baseFrequency = val * 100)
+                synth.voice1.filterEnvelope.set({
+                  baseFrequency: Math.abs(val * 100),
+                })
               }
             >
               <label>frequency</label>
             </Dial>
             <Dial
               min={0}
-              max={50}
+              max={20}
               val={synth.voice1.filterEnvelope.exponent}
               color={false}
               onChange={(val) => (synth.voice1.filterEnvelope.exponent = val)}

@@ -110,9 +110,7 @@ export class SynthPluck1 extends Tone.PolySynth {
     this.noteIndex = 0;
     this.playing = false;
 
-    // this.chain(this.efx.gain, this.efx.dist, this.efx.autoFilter, this.efx.pan, this.efx.delay, this.efx.reverb);
-
-    this.transport = options.transport || Tone.getTransport();
+    this.transport = options.transport || Tone.getTransport()
   }
 
   repeater(time) {
