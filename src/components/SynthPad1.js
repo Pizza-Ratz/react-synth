@@ -4,6 +4,7 @@ import { SynthPad1 as SynthPad1Inst } from "../lib/SynthPad1";
 import Fader from "./Fader";
 import Dial from "./Dial";
 import "../styles/SynthPad1.scss";
+import ControlGroup from "./ControlGroup";
 
 // does log^10(val), where val is in 0-100000 => 0-5
 function linearToLog(val) {
@@ -21,7 +22,9 @@ const SynthPad1 = () => {
 
   React.useEffect(() => {
     synth.toDestination();
-  });
+    synth.start();
+    return () => synth.stop();
+  }, [synth]);
 
   return (
     <div className={`synth-pad-1`}>
@@ -34,29 +37,58 @@ const SynthPad1 = () => {
         label="Volume"
       />
       <hr />
-      <Dial
-        numTicks={25}
-        degrees={260}
-        min={0}
-        max={20}
-        val={5}
-        color={false}
-        onChange={(val) =>
-          (synth.voice0.filterEnvelope.baseFrequency = val * 100 + 300)
-        }
-      >
-        <label>vc0 flt env freq</label>
-      </Dial>
-      <Dial
-        min={0}
-        max={30}
-        val={5}
-        onChange={(val) =>
-          (synth.voice1.filterEnvelope.baseFrequency = val * 100 + 300)
-        }
-      >
-        <label>vc1 flt env freq</label>
-      </Dial>
+      <div className="voices">
+        <ControlGroup label="Voice 0">
+          <ControlGroup label="filterEnv">
+            <Dial
+              min={0}
+              max={50}
+              val={synth.voice0.filterEnvelope.value}
+              color={false}
+              onChange={(val) =>
+                synth.voice0.filterEnvelope.set({
+                  baseFrequency: val * 100 + 100,
+                })
+              }
+            >
+              <label>frequency</label>
+            </Dial>
+            <Dial
+              min={0}
+              max={20}
+              val={synth.voice0.filterEnvelope.exponent}
+              color={false}
+              onChange={(val) => (synth.voice0.filterEnvelope.exponent = val)}
+            >
+              <label>exponent</label>
+            </Dial>
+          </ControlGroup>
+        </ControlGroup>
+        <ControlGroup label="Voice 1">
+          <ControlGroup label="filterEnv">
+            <Dial
+              min={0}
+              max={100}
+              val={synth.voice1.filterEnvelope.value}
+              color={false}
+              onChange={(val) =>
+                (synth.voice1.filterEnvelope.baseFrequency = val * 100)
+              }
+            >
+              <label>frequency</label>
+            </Dial>
+            <Dial
+              min={0}
+              max={50}
+              val={synth.voice1.filterEnvelope.exponent}
+              color={false}
+              onChange={(val) => (synth.voice1.filterEnvelope.exponent = val)}
+            >
+              <label>exponent</label>
+            </Dial>
+          </ControlGroup>
+        </ControlGroup>
+      </div>
     </div>
   );
 };

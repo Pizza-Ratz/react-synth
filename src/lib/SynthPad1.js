@@ -70,12 +70,18 @@ export class SynthPad1 extends Tone.DuoSynth {
     this.noteIndex = 0;
     this.playing = false;
 
+    delete this.volume;
+    delete this.output;
+    this.output = new Tone.Volume(-20);
+    this.volume = this.output.volume;
+
     this.chain(
       this.efx.gain,
       this.efx.distortion,
       this.efx.delay,
       this.efx.reverb,
-      this.efx.pan
+      this.efx.pan,
+      this.output
     );
 
     this.transport = options.transport || Tone.getTransport();
@@ -86,6 +92,7 @@ export class SynthPad1 extends Tone.DuoSynth {
       this.pleaseStop = false;
       return;
     }
+    console.log("SynthPad1 playing a note");
     let note = this.pattern[this.noteIndex % this.pattern.length];
     this.triggerAttackRelease(note, "8n", time);
     this.noteIndex++;
