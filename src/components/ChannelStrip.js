@@ -2,7 +2,7 @@ import React from "react";
 import Dial from "./Dial";
 import Slider from "./Slider";
 import "../styles/controls/ChannelStrip.scss";
-import MasterOutContext from "../contexts/MasterOutContext";
+import BusContext from "../contexts/BusContext";
 
 // does log^10(val), where val is in 0-100000 => 0-5
 function linearToLog(val) {
@@ -16,7 +16,7 @@ function linearToDecibels(val = 0) {
 }
 
 const ChannelStrip = ({ id }) => {
-  const channel = React.useContext(MasterOutContext);
+  const channel = React.useContext(BusContext);
 
   return (
     <div className="channel-strip" id={id}>

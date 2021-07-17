@@ -1,12 +1,12 @@
 import React from "react";
 import "./App.scss";
 import * as Tone from "tone";
-import { ChannelStrip, TransportControls } from "./components";
+import { ChannelStrip, TransportControls, Panner3D } from "./components";
 import SynthPad1 from "./instruments/interfaces/SynthPad1";
 import SynthPluck1 from "./instruments/interfaces/SynthPluck1";
 import SynthPluck2 from "./instruments/interfaces/SynthPluck2";
 
-import { MasterOutContextProvider } from "./contexts/MasterOutContext";
+import { BusContextProvider } from "./contexts/BusContext";
 
 function App() {
   const [started, setStarted] = React.useState(false);
@@ -22,15 +22,18 @@ function App() {
     <div className="App">
       <header className="App-header">Kitchen Sink</header>
       <main>
-        <MasterOutContextProvider>
-          <div>
+        <BusContextProvider name="master">
+          <div id="master-controls">
             <TransportControls />
-            <ChannelStrip label="Master" id="master" />
+            <div>
+              <ChannelStrip label="Master" />
+              <Panner3D />
+            </div>
           </div>
           <SynthPad1 />
           <SynthPluck1 />
           <SynthPluck2 />
-        </MasterOutContextProvider>
+        </BusContextProvider>
       </main>
     </div>
   );

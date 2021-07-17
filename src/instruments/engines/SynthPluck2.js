@@ -1,7 +1,6 @@
 import * as Tone from "tone";
 import { patterns } from "../../lib/Patterns";
 import Debug from "debug";
-import { debug } from "tone";
 
 class SynthPluck2 extends Tone.MonoSynth {
   constructor(options = {}) {

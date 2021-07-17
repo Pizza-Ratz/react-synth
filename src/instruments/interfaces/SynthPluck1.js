@@ -4,7 +4,7 @@ import { SynthPluck1 as SynthPluck1Inst } from "../engines/SynthPluck1";
 import Dial from "../../components/Dial";
 import ControlGroup from "../../components/ControlGroup";
 import "../../styles/SynthPluck1.scss";
-import MasterOutContext from "../../contexts/MasterOutContext";
+import BusContext from "../../contexts/BusContext";
 
 // does log^10(val), where val is in 0-100000 => 0-5
 function linearToLog(val) {
@@ -19,26 +19,17 @@ function linearToDecibels(val = 0) {
 
 const SynthPluck1 = () => {
   const [synth, setSynth] = React.useState(new SynthPluck1Inst());
-  const master = React.useContext(MasterOutContext);
+  const bus = React.useContext(BusContext);
 
   React.useEffect(() => {
-    synth.chain(
-      synth.efx.gain,
-      synth.efx.vibrato,
-      synth.efx.dist,
-      synth.efx.autoFilter,
-      synth.efx.pan,
-      synth.efx.delay,
-      synth.efx.reverb,
-      master
-    );
+    synth.output.connect(bus);
     synth.start();
     return () => {
       synth.stop();
       synth.disposed || synth.dispose();
       setSynth(null);
     };
-  }, [synth, master]);
+  }, [synth, bus]);
 
   return (
     <div className={`synth-pluck-1`}>

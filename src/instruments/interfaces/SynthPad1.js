@@ -4,7 +4,7 @@ import engine from "../engines/SynthPad1";
 import Dial from "../../components/Dial";
 import "../../styles/SynthPad1.scss";
 import ControlGroup from "../../components/ControlGroup";
-import MasterOut from "../../contexts/MasterOutContext";
+import BusContext from "../../contexts/BusContext";
 
 // does log^10(val), where val is in 0-100000 => 0-5
 function linearToLog(val) {
@@ -21,7 +21,7 @@ const SMALL_KNOB_SIZE = 30;
 
 const SynthPad1 = () => {
   const [synth] = React.useState(new engine());
-  const master = React.useContext(MasterOut);
+  const master = React.useContext(BusContext);
 
   React.useEffect(() => {
     synth.start();
