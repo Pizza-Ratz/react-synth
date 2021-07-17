@@ -38,11 +38,14 @@ const SynthPad1 = () => {
   return (
     <div className={`synth-pad-1`}>
       <h3>Synth Pad 1</h3>
-      <Fader
-        range={{ min: [0], max: [1000] }}
-        onValueChange={(val) => (synth.volume.value = scaleGain(val * 10))}
-        label="Volume"
-      />
+      <Dial
+        min={0}
+        max={1000}
+        val={synth.volume.value}
+        onChange={(val) => (synth.volume.value = scaleGain(val * 10))}
+      >
+        <label>Volume</label>
+      </Dial>
       <hr />
       <Dial
         min={0}

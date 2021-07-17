@@ -19,4 +19,10 @@ main {
   flex-direction: row;
   align-items: flex-start;
   justify-content: space-around;
+
+  .transport-controls {
+    position: absolute;
+    left: 3em;
+    bottom: 3em;
+  }
 }

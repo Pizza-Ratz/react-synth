@@ -4,6 +4,7 @@ import * as Tone from "tone";
 import { ChannelStrip, TransportControls } from "./components";
 import SynthPad1 from "./components/SynthPad1";
 import SynthPluck1 from "./components/SynthPluck1";
+import { MasterOutContextProvider } from "./contexts/MasterOutContext";
 
 function App() {
   const [started, setStarted] = React.useState(false);
@@ -19,9 +20,11 @@ function App() {
       <header className="App-header">Kitchen Sink</header>
       <main>
         <TransportControls />
-        <ChannelStrip label="Master" />
-        <SynthPad1 />
-        <SynthPluck1 />
+        <MasterOutContextProvider>
+          <ChannelStrip label="Master" />
+          <SynthPad1 />
+          <SynthPluck1 />
+        </MasterOutContextProvider>
       </main>
     </div>
   );
