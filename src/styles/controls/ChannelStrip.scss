@@ -1,8 +1,11 @@
 @use "../materials";
 @use "../text";
+@use "../objects";
 
 .channel-strip {
   @include materials.base-plate;
+  @include objects.console-panel;
+
   display: flex;
   flex-direction: column;
   justify-content: center;

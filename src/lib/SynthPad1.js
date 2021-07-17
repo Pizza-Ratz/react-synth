@@ -57,7 +57,7 @@ export class SynthPad1 extends Tone.DuoSynth {
       gain: new Tone.Gain(0.2),
       dist: new Tone.Distortion(0),
       delay: new Tone.FeedbackDelay({
-        duration: "8n.", 
+        duration: "8n.",
         feedback: 0.3,
         wet: 0.2,
       }),
@@ -69,35 +69,42 @@ export class SynthPad1 extends Tone.DuoSynth {
     };
     this.noteIndex = 0;
     this.playing = false;
-    this.transport = options.transport || Tone.getTransport()
+    this.transport = options.transport || Tone.getTransport();
 
     return this;
   }
-    // delete this.volume;
-    // delete this.output;
-    // this.output = new Tone.Volume(-20);
-    // this.volume = this.  }
+  // delete this.volume;
+  // delete this.output;
+  // this.output = new Tone.Volume(-20);
+  // this.volume = this.  }
 
-    repeater(time) {
-      if (this.pleaseStop) {
-        this.pleaseStop = false;
-        return;
-      }
-      let note = this.pattern[this.noteIndex % this.pattern.length];
-      this.triggerAttackRelease(note, "4n", time);
-      this.noteIndex++;
-    }
-  
-    start() {
+  repeater(time) {
+    if (this.pleaseStop) {
       this.pleaseStop = false;
-      this.noteIndex = 0;
-      this.nextEvent = this.transport.scheduleRepeat((time) => {
-        this.repeater(time);
-      }, "4n");
+      return;
     }
-  
-    stop() {
-      this.pleaseStop = true;
-      if (this.nextEvent) this.transport.cancel(this.nextEvent);
-    }
+    let note = this.pattern[this.noteIndex % this.pattern.length];
+    this.triggerAttackRelease(note, "4n", time);
+    this.noteIndex++;
   }
+
+  start() {
+    this.pleaseStop = false;
+    this.noteIndex = 0;
+    this.nextEvent = this.transport.scheduleRepeat((time) => {
+      this.repeater(time);
+    }, "4n");
+  }
+
+  stop() {
+    this.pleaseStop = true;
+    if (this.nextEvent) this.transport.cancel(this.nextEvent);
+  }
+
+  dispose() {
+    for (const effect of Object.values(this.efx)) {
+      effect.disposed || effect.dispose();
+    }
+    this.disposed || super.dispose();
+  }
+}

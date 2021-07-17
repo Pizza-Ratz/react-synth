@@ -22,8 +22,6 @@ const Drone = () => {
     synth.toDestination();
   });
 
-  console.log(synth);
-
   return (
     <div className={`drone`}>
       <h3>Drone Maker</h3>

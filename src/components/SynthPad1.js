@@ -1,11 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import * as Tone from "tone";
 import { SynthPad1 as SynthPad1Inst } from "../lib/SynthPad1";
-import Fader from "./Fader";
 import Dial from "./Dial";
 import "../styles/SynthPad1.scss";
 import ControlGroup from "./ControlGroup";
+import MasterOut from "../contexts/MasterOutContext";
 
 // does log^10(val), where val is in 0-100000 => 0-5
 function linearToLog(val) {
@@ -14,12 +13,15 @@ function linearToLog(val) {
 
 // turns 0-5 into ~ -110-0 db
 function scaleGain(val = 0) {
-  // console.log(`${val} -> ${linearToLog(val)} => ${(60 * linearToLog(val)) - 300}`)
-  return 20 * linearToLog(val) - 100;
+  console.log(`${val} -> ${linearToLog(val)} => ${20 * linearToLog(val) - 80}`);
+  return 20 * linearToLog(val) - 80;
 }
+
+const SMALL_KNOB_SIZE = 30;
 
 const SynthPad1 = () => {
   const [synth] = React.useState(new SynthPad1Inst());
+  const master = React.useContext(MasterOut);
 
   React.useEffect(() => {
     synth.chain(
@@ -27,13 +29,13 @@ const SynthPad1 = () => {
       synth.efx.dist,
       synth.efx.delay,
       synth.efx.reverb,
-      Tone.Destination
+      master
     );
     synth.start();
     return () => {
       synth.stop();
     };
-  }, [synth]);
+  }, [synth, master]);
 
   return (
     <div className={`synth-pad-1`}>
@@ -46,7 +48,6 @@ const SynthPad1 = () => {
       >
         <label>Volume</label>
       </Dial>
-      <hr />
       <Dial
         min={0}
         max={100}
@@ -60,6 +61,7 @@ const SynthPad1 = () => {
         <ControlGroup label="Voice 0">
           <ControlGroup label="filterEnv">
             <Dial
+              size={SMALL_KNOB_SIZE}
               min={0}
               max={100}
               val={synth.voice0.filterEnvelope.value}
@@ -73,6 +75,7 @@ const SynthPad1 = () => {
               <label>frequency</label>
             </Dial>
             <Dial
+              size={SMALL_KNOB_SIZE}
               min={0}
               max={20}
               val={synth.voice0.filterEnvelope.exponent}
@@ -86,6 +89,7 @@ const SynthPad1 = () => {
         <ControlGroup label="Voice 1">
           <ControlGroup label="filterEnv">
             <Dial
+              size={SMALL_KNOB_SIZE}
               min={0}
               max={100}
               val={synth.voice1.filterEnvelope.value}
@@ -99,6 +103,7 @@ const SynthPad1 = () => {
               <label>frequency</label>
             </Dial>
             <Dial
+              size={SMALL_KNOB_SIZE}
               min={0}
               max={20}
               val={synth.voice1.filterEnvelope.exponent}

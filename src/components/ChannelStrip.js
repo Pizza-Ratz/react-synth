@@ -4,16 +4,22 @@ import Slider from "./Slider";
 import "../styles/controls/ChannelStrip.scss";
 import MasterOutContext from "../contexts/MasterOutContext";
 
-const VOL_SCALING_FACTOR = 10000;
-const valToDecibels = (val) => (Math.abs(val % 100) - 100) * VOL_SCALING_FACTOR;
-const decibelsToVal = (dB) =>
-  Math.abs(Math.floor(dB / VOL_SCALING_FACTOR) + 100);
+// does log^10(val), where val is in 0-100000 => 0-5
+function linearToLog(val) {
+  return val > 0 ? Math.log10(Math.abs(val)) : 0;
+}
 
-const ChannelStrip = () => {
+// turns 0-100000 into ~ -110-0 db
+function linearToDecibels(val = 0) {
+  // console.log(`${val} -> ${linearToLog(val)} => ${20 * linearToLog(val) - 95}`);
+  return 20 * linearToLog(val) - 95;
+}
+
+const ChannelStrip = ({ id }) => {
   const channel = React.useContext(MasterOutContext);
 
   return (
-    <div className="channel-strip">
+    <div className="channel-strip" id={id}>
       <label>Master</label>
       <Dial
         size={30}
@@ -21,14 +27,16 @@ const ChannelStrip = () => {
         min={0}
         max={100}
         numTicks={0}
-        onChange={(val) => (channel.pan.value = (val - 50) / 100)}
+        onChange={(val) => (channel.pan.value = (val - 51) / 100)}
       >
         <label>Pan</label>
       </Dial>
       <Slider
+        min={0}
+        max={100000}
         onChange={(val) => {
-          channel.volume.rampTo(val - 95);
-          console.log(`[${val}] -> ${val - 90} => ${channel.volume.value}`);
+          channel.volume.value = linearToDecibels(val);
+          // console.log(`[${val}] -> ${val - 90} => ${channel.volume.value}`);
         }}
       />
     </div>

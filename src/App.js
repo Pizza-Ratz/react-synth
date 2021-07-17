@@ -4,6 +4,8 @@ import * as Tone from "tone";
 import { ChannelStrip, TransportControls } from "./components";
 import SynthPad1 from "./components/SynthPad1";
 import SynthPluck1 from "./components/SynthPluck1";
+import SynthPluck2 from "./instruments/interfaces/SynthPluck2";
+
 import { MasterOutContextProvider } from "./contexts/MasterOutContext";
 
 function App() {
@@ -19,11 +21,14 @@ function App() {
     <div className="App">
       <header className="App-header">Kitchen Sink</header>
       <main>
-        <TransportControls />
         <MasterOutContextProvider>
-          <ChannelStrip label="Master" />
+          <div>
+            <TransportControls />
+            <ChannelStrip label="Master" id="master" />
+          </div>
           <SynthPad1 />
           <SynthPluck1 />
+          <SynthPluck2 />
         </MasterOutContextProvider>
       </main>
     </div>

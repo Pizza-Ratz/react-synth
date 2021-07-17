@@ -110,7 +110,7 @@ export class SynthPluck1 extends Tone.PolySynth {
     this.noteIndex = 0;
     this.playing = false;
 
-    this.transport = options.transport || Tone.getTransport()
+    this.transport = options.transport || Tone.getTransport();
   }
 
   repeater(time) {
@@ -134,5 +134,12 @@ export class SynthPluck1 extends Tone.PolySynth {
   stop() {
     this.pleaseStop = true;
     if (this.nextEvent) this.transport.cancel(this.nextEvent);
+  }
+
+  dispose() {
+    for (const effect of Object.values(this.efx)) {
+      effect.dispose();
+    }
+    super.dispose();
   }
 }

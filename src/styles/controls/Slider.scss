@@ -1,3 +1,5 @@
+@use "sass:math";
+
 $val: 320hz 600hz 1khz 3khz 6khz 12khz;
 
 $input-bw: 1.5em;
@@ -127,7 +129,7 @@ input[type="range"] {
   }
 
   &::-webkit-slider-thumb {
-    margin-top: ($track-h - $thumb-h)/2;
+    margin-top: math.div($track-h - $thumb-h, 2);
     @include thumb();
   }
   &::-moz-range-thumb {

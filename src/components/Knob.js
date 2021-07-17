@@ -13,7 +13,6 @@ const Knob = ({
   onValueChange = () => {},
 }) => {
   const [snowflake] = React.useState(Math.floor(Math.random() * 1000));
-  let val = 0;
 
   return (
     <div className="knob-container">

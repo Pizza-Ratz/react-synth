@@ -4,6 +4,9 @@
 
 import React from "react";
 import * as Tone from "tone";
+import Debug from "debug";
+
+const debug = Debug("master:output");
 
 const channel = new Tone.Channel({
   volume: -12,
@@ -13,6 +16,13 @@ const channel = new Tone.Channel({
 });
 
 channel.toDestination();
+
+if (debug.enabled) {
+  const meter = new Tone.Meter();
+  channel.connect(meter);
+  setInterval(() => debug(meter.getValue()), 1000);
+}
+
 const MasterOutContext = React.createContext(channel);
 
 export const MasterOutContextProvider = ({ children }) => {

@@ -18,11 +18,15 @@ main {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  justify-content: space-around;
+  justify-content: flex-start;
 
   .transport-controls {
-    position: absolute;
     left: 3em;
     bottom: 3em;
+  }
+
+  .channel-strip#master {
+    left: 3em;
+    top: 3em;
   }
 }

@@ -96,7 +96,7 @@ class Dial extends React.Component {
   };
 
   render() {
-    let { numTicks, size, color } = this.props;
+    let { numTicks, size } = this.props;
     let kStyle = {
       width: size,
       height: size,
