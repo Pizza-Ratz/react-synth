@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import SynthPluckInst from "../../instruments/engines/SynthPluck2";
 import Dial from "../../components/Dial";
 import "../../styles/SynthPluck2.scss";
-import MasterOutContext from "../../contexts/MasterOutContext";
 import BusContext from "../../contexts/BusContext";
 
 // does log^10(val), where val is in 0-100000 => 0-5
