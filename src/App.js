@@ -15,7 +15,7 @@ function App() {
     if (started) return;
     setStarted(true);
     await Tone.start();
-    Tone.Context.lookAhead = 2;
+    Tone.Context.lookAhead = "2s";
   });
 
   return (

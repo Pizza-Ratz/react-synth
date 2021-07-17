@@ -11,7 +11,7 @@ export default class SynthPad1 extends Tone.DuoSynth {
       Object.assign(
         {
           harmonicity: 0.5,
-          volume: -20,
+          volume: -10,
           voice0: {
             oscillator: { type: "sawtooth" },
             envelope: {
@@ -51,12 +51,11 @@ export default class SynthPad1 extends Tone.DuoSynth {
       )
     );
 
-    this.pattern = options.pattern || patterns.eternity;
+    this.pattern = options.pattern || patterns.prelude;
     this.noteIndex = 0;
 
     this.efx = {
-      gain: new Tone.Gain(0.2),
-      dist: new Tone.Distortion(0),
+      distortion: new Tone.Distortion(0),
       delay: new Tone.FeedbackDelay({
         duration: "8n.",
         feedback: 0.3,
@@ -72,8 +71,7 @@ export default class SynthPad1 extends Tone.DuoSynth {
     this.preEfxVolume = this.volume;
     const postEfxVolume = new Volume();
     this.chain(
-      this.efx.gain,
-      this.efx.dist,
+      this.efx.distortion,
       this.efx.delay,
       this.efx.reverb,
       postEfxVolume
@@ -89,10 +87,6 @@ export default class SynthPad1 extends Tone.DuoSynth {
 
     return this;
   }
-  // delete this.volume;
-  // delete this.output;
-  // this.output = new Tone.Volume(-20);
-  // this.volume = this.  }
 
   repeater(time) {
     if (this.pleaseStop) {

@@ -33,7 +33,7 @@ const SynthPad1 = () => {
 
   return (
     <div className={`synth-pad-1`}>
-      <h3>Synth Pad 1</h3>
+      <h3>Cello</h3>
       <Dial
         min={0}
         max={1000}
@@ -42,15 +42,26 @@ const SynthPad1 = () => {
       >
         <label>Volume</label>
       </Dial>
-      <Dial
-        min={0}
-        max={100}
-        val={synth.efx.gain.gain.value}
-        color={false}
-        onChange={(val) => (synth.efx.gain.gain.value = val / 100)}
-      >
-        <label>pre-efx gain</label>
-      </Dial>
+      <div style={{ display: "flex" }}>
+        <Dial
+          size={40}
+          min={0}
+          max={100}
+          val={synth.preEfxVolume.value}
+          color={false}
+          onChange={(val) => (synth.preEfxVolume.value = val / 100)}
+        >
+          <label>pre-efx gain</label>
+        </Dial>
+        <Dial
+          size={40}
+          val={synth.harmonicity.value * 100}
+          color={true}
+          onChange={(val) => (synth.harmonicity.value = val / 100)}
+        >
+          <label>harmonicity</label>
+        </Dial>
+      </div>
       <div className="voices">
         <ControlGroup label="Voice 0">
           <ControlGroup label="filterEnv">
