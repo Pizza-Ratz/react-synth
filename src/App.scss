@@ -1,10 +1,8 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:400);
 
 body {
-  background-color: #212121;
-  text-rendering: auto;
-  -webkit-font-smoothing: antialiased;
-  font-family: Roboto;
+  margin: 0;
+  background-image: radial-gradient(30% 50%, #555 6%, #333 90%);
 }
 
 header {
@@ -19,6 +17,16 @@ header {
 main {
   display: flex;
   flex-direction: row;
-  align-items:center;
-  justify-content: space-between;
+  align-items: flex-start;
+  justify-content: flex-start;
+
+  .transport-controls {
+    left: 3em;
+    bottom: 3em;
+  }
+
+  .channel-strip#master {
+    left: 3em;
+    top: 3em;
+  }
 }

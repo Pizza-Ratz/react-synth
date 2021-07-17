@@ -1,4 +1,4 @@
-//import SynthDrone from './SynthDrone'
+// import { SynthDrone } from './SynthDrone'
 import { SynthPad1 } from './SynthPad1'
 import SynthPad2 from './SynthPad2'
 import { SynthPluck1 } from './SynthPluck1'
