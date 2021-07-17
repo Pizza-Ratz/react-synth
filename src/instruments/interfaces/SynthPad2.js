@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import engine from "../engines/SynthPad2";
 import Fader from "../../components/Fader";
+import BusContext from "../../contexts/BusContext";
 
 // does log^10(val), where val is in 0-100000 => 0-5
 function linearToLog(val) {
@@ -16,6 +17,12 @@ function scaleGain(val = 0) {
 
 const SynthPad2 = ({ className = "synthPad2" }) => {
   const [synth] = React.useState(new engine());
+  const bus = React.useContext(BusContext);
+
+  React.useEffect(() => {
+    synth.output.connect(bus);
+    synth.start();
+  }, [synth, bus]);
 
   return (
     <div className={className}>
