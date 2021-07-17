@@ -1,10 +1,11 @@
 import * as Tone from "tone";
-import { patterns } from "./Patterns";
+import { Volume } from "tone";
+import { patterns } from "../../lib/Patterns";
 
 /**
  * A bright FM pad with a gentle attack.
  */
-export class SynthPad1 extends Tone.DuoSynth {
+export default class SynthPad1 extends Tone.DuoSynth {
   constructor(options = {}) {
     super(
       Object.assign(
@@ -67,6 +68,21 @@ export class SynthPad1 extends Tone.DuoSynth {
         wet: 0.3,
       }),
     };
+
+    this.preEfxVolume = this.volume;
+    const postEfxVolume = new Volume();
+    this.chain(
+      this.efx.gain,
+      this.efx.dist,
+      this.efx.delay,
+      this.efx.reverb,
+      postEfxVolume
+    );
+    delete this.volume;
+    delete this.output;
+    this.output = postEfxVolume;
+    this.volume = this.output.volume;
+
     this.noteIndex = 0;
     this.playing = false;
     this.transport = options.transport || Tone.getTransport();

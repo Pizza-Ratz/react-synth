@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import engine from "../lib/SynthPad2";
-import Fader from "./Fader";
+import engine from "../engines/SynthPad2";
+import Fader from "../../components/Fader";
 
 // does log^10(val), where val is in 0-100000 => 0-5
 function linearToLog(val) {

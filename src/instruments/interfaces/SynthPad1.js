@@ -1,10 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { SynthPad1 as SynthPad1Inst } from "../lib/SynthPad1";
-import Dial from "./Dial";
-import "../styles/SynthPad1.scss";
-import ControlGroup from "./ControlGroup";
-import MasterOut from "../contexts/MasterOutContext";
+import engine from "../engines/SynthPad1";
+import Dial from "../../components/Dial";
+import "../../styles/SynthPad1.scss";
+import ControlGroup from "../../components/ControlGroup";
+import MasterOut from "../../contexts/MasterOutContext";
 
 // does log^10(val), where val is in 0-100000 => 0-5
 function linearToLog(val) {
@@ -20,18 +20,12 @@ function scaleGain(val = 0) {
 const SMALL_KNOB_SIZE = 30;
 
 const SynthPad1 = () => {
-  const [synth] = React.useState(new SynthPad1Inst());
+  const [synth] = React.useState(new engine());
   const master = React.useContext(MasterOut);
 
   React.useEffect(() => {
-    synth.chain(
-      synth.efx.gain,
-      synth.efx.dist,
-      synth.efx.delay,
-      synth.efx.reverb,
-      master
-    );
     synth.start();
+    synth.output.connect(master);
     return () => {
       synth.stop();
     };

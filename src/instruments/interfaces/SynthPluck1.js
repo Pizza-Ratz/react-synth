@@ -1,10 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { SynthPluck1 as SynthPluck1Inst } from "../lib/SynthPluck1";
-import Dial from "./Dial";
-import ControlGroup from "./ControlGroup";
-import "../styles/SynthPluck1.scss";
-import MasterOutContext from "../contexts/MasterOutContext";
+import { SynthPluck1 as SynthPluck1Inst } from "../engines/SynthPluck1";
+import Dial from "../../components/Dial";
+import ControlGroup from "../../components/ControlGroup";
+import "../../styles/SynthPluck1.scss";
+import MasterOutContext from "../../contexts/MasterOutContext";
 
 // does log^10(val), where val is in 0-100000 => 0-5
 function linearToLog(val) {
