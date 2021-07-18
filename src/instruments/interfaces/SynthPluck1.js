@@ -36,6 +36,7 @@ const SynthPluck1 = () => {
     <div className={`synth-pluck-1`}>
       <h3>Eternity</h3>
       <Dial
+        size={50}
         min={0}
         max={1000}
         value={dBToKnob(synth.volume.value, 1000)}
@@ -48,6 +49,7 @@ const SynthPluck1 = () => {
 
       <ControlGroup label="filter">
         <Dial
+          size={30}
           min={1}
           max={1500}
           value={synth.efx.autoFilter.baseFrequency}
@@ -56,6 +58,7 @@ const SynthPluck1 = () => {
           <label>cutoff</label>
         </Dial>
         <Dial
+          size={30}
           min={0}
           max={1000}
           value={Math.floor(synth.efx.autoFilter.filter.Q.value) * 1000}

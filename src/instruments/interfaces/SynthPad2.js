@@ -10,7 +10,7 @@ const SynthPad2 = ({ className = "synthPad2" }) => {
 
   React.useEffect(() => {
     synth.output.connect(bus);
-    synth.start();
+    synth.transport.scheduleOnce(synth.start.bind(synth), 1);
   }, [synth, bus]);
 
   return (

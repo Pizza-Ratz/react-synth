@@ -21,7 +21,7 @@ function App() {
           </div>
           <SynthPad1 />
           <SynthPluck1 />
-          {/* <SynthPluck2 /> */}
+          <SynthPluck2 />
         </BusContextProvider>
       </main>
     </div>

@@ -29,6 +29,7 @@ const SynthPad1 = () => {
     <div className={`synth-pad-1`}>
       <h3>Sizzle</h3>
       <Dial
+        size={50}
         min={0}
         max={1000}
         color={true}
@@ -40,7 +41,6 @@ const SynthPad1 = () => {
       </Dial>
       <div style={{ display: "flex" }}>
         <Dial
-          size={40}
           min={0}
           max={100}
           value={synth.harmonicity.value * 100}
