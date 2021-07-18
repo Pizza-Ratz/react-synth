@@ -6,6 +6,7 @@ import "../../styles/SynthPluck2.scss";
 import BusContext from "../../contexts/BusContext";
 import { dBToKnob, knobToDB } from "../../lib/transformers";
 import * as Tone from "tone";
+import ControlGroup from "../../components/ControlGroup";
 
 const SynthPluck2 = () => {
   const [synth] = React.useState(new SynthPluckInst());
@@ -13,6 +14,13 @@ const SynthPluck2 = () => {
   const bus = React.useContext(BusContext);
 
   React.useEffect(() => {
+    synth.chain(
+      synth.efx.gain,
+      synth.efx.distortion,
+      synth.efx.delay,
+      synth.efx.reverb,
+      bus
+    );
     meter.normalRange = true;
     synth.output.connect(bus);
     synth.output.connect(meter);
@@ -26,6 +34,7 @@ const SynthPluck2 = () => {
     <div className={`synth-pluck-2`}>
       <h3>Fantasy</h3>
       <Dial
+        size={50}
         min={0}
         max={1000}
         value={dBToKnob(synth.volume.value)}
@@ -35,12 +44,30 @@ const SynthPluck2 = () => {
       >
         <label>Volume</label>
       </Dial>
+      <ControlGroup label="filter">
+        <Dial
+          min={100}
+          max={2500}
+          value={Math.floor(synth.filter.frequency.value)}
+          onChange={(val) => (synth.filter.frequency.value = val)}
+        >
+          <label>cutoff</label>
+        </Dial>
+        <Dial
+          min={0}
+          max={100}
+          value={Math.floor(synth.filter.Q.value) * 100}
+          onChange={(val) => (synth.filter.Q.value = val / 100)}
+        >
+          <label>Q</label>
+        </Dial>
+      </ControlGroup>
       <Dial
         min={1}
         max={100}
-        value={Math.floor(synth.efx.distortion.wet.value) * 100}
+        value={Math.floor(synth.efx.distortion.distortion) * 100}
         onChange={(val) =>
-          (synth.efx.distortion.wet.value = Math.abs(val / 100))
+          (synth.efx.distortion.distortion = Math.abs(val / 100))
         }
       >
         <label>distortion</label>

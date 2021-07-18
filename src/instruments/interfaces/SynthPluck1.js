@@ -14,18 +14,19 @@ const SynthPluck1 = () => {
   const [meter] = React.useState(new Tone.Meter());
 
   React.useEffect(() => {
-    // synth.chain(
-    //   synth.efx.vibrato,
-    //   synth.efx.dist,
-    //   synth.efx.autoFilter,
-    //   synth.efx.delay,
-    //   synth.efx.reverb,
-    //   synth.postEfxVolume
-    // );
-    synth.output.connect(bus);
+    synth.chain(
+      synth.efx.vibrato,
+      synth.efx.dist,
+      synth.efx.autoFilter,
+      synth.efx.delay,
+      synth.efx.reverb,
+      bus
+    );
+    synth.start();
+    // synth.postInit();
+    // synth.connect(bus);
     synth.output.connect(meter);
     meter.normalRange = true;
-    synth.start();
     return () => {
       synth.stop();
     };
@@ -35,6 +36,7 @@ const SynthPluck1 = () => {
     <div className={`synth-pluck-1`}>
       <h3>Eternity</h3>
       <Dial
+        size={50}
         min={0}
         max={1000}
         value={dBToKnob(synth.volume.value, 1000)}
@@ -47,6 +49,7 @@ const SynthPluck1 = () => {
 
       <ControlGroup label="filter">
         <Dial
+          size={30}
           min={1}
           max={1500}
           value={synth.efx.autoFilter.baseFrequency}
@@ -55,6 +58,7 @@ const SynthPluck1 = () => {
           <label>cutoff</label>
         </Dial>
         <Dial
+          size={30}
           min={0}
           max={1000}
           value={Math.floor(synth.efx.autoFilter.filter.Q.value) * 1000}

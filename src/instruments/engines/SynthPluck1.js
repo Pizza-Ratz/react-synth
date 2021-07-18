@@ -1,74 +1,52 @@
 import * as Tone from "tone";
 import { patterns } from "../../lib/Patterns";
 
+/**
+ * NOTE: For this synth, effects must be chained within the context where the instance
+ * will be used. No idea why.
+ */
 export default class SynthPluck1 extends Tone.PolySynth {
   constructor(options = {}) {
     super(
       Object.assign(
         {
-          voices: 8,
+          maxPolyphony: 8,
           volume: -30,
-          oscillator: {
-            type: "pwm",
-            modulationFrequency: 0.3,
-          },
-          envelope: {
-            attack: 0.02,
-            decay: 0.4,
-            decayCurve: "exponential",
-            sustain: 0,
-            release: 0.7,
-            releaseCurve: "exponential",
-          },
-          filter: {
-            Q: 2,
-            rolloff: -48,
-            type: "lowpass",
-          },
-          filterEnvelope: {
-            attack: 0.3,
-            baseFrequency: 300,
-            decay: 0.4,
-            exponent: 2,
-            octaves: 3,
-            release: 0.7,
-            sustain: 0.07,
+          options: {
+            oscillator: {
+              type: "pwm",
+              modulationFrequency: 0.2,
+              width: 0.5,
+            },
+            envelope: {
+              attack: 0.07,
+              attackCurve: "exponential",
+              decay: 0.44,
+              decayCurve: "exponential",
+              sustain: 0.07,
+              release: 0.7,
+              releaseCurve: "exponential",
+            },
+            filter: {
+              Q: 2,
+              rolloff: -24,
+              type: "lowpass",
+            },
+            filterEnvelope: {
+              attack: 0.3,
+              baseFrequency: 500,
+              decay: 0.4,
+              exponent: 2,
+              octaves: 3,
+              release: 0.7,
+              sustain: 0.07,
+            },
           },
         },
         options
       )
     );
 
-    this.set({
-      oscillator: {
-        type: "pwm",
-        modulationFrequency: 0.2,
-        width: 0.5,
-      },
-      envelope: {
-        attack: 0.07,
-        attackCurve: "exponential",
-        decay: 0.44,
-        decayCurve: "exponential",
-        sustain: 0.07,
-        release: 0.7,
-        releaseCurve: "exponential",
-      },
-      filter: {
-        Q: 2,
-        rolloff: -24,
-        type: "lowpass",
-      },
-      filterEnvelope: {
-        attack: 0.3,
-        baseFrequency: 500,
-        decay: 0.4,
-        exponent: 2,
-        octaves: 3,
-        release: 0.7,
-        sustain: 0.07,
-      },
-    });
     this.pattern = options.pattern || patterns.eternity;
     this.noteIndex = 0;
 
@@ -78,9 +56,6 @@ export default class SynthPluck1 extends Tone.PolySynth {
         duration: "8n",
         feedback: 0.45,
         wet: 0.3,
-      }),
-      pan: new Tone.Panner({
-        pan: 0,
       }),
       reverb: new Tone.Freeverb({
         dampening: 10000,
@@ -105,13 +80,37 @@ export default class SynthPluck1 extends Tone.PolySynth {
         depth: 0.16,
         type: "sine",
       }),
-      gain: new Tone.Gain(0.2),
     };
+
+    this.preEfxOut = this.output;
     this.noteIndex = 0;
     this.playing = false;
 
     this.transport = options.transport || Tone.getTransport();
+
+    return this;
   }
+
+  // this doesn't work for polysynths?
+  // postInit() {
+  //   const postEfxOut = new Tone.Volume();
+  //   this.chain(
+  //     this.efx.vibrato,
+  //     this.efx.dist,
+  //     this.efx.autoFilter,
+  //     this.efx.delay,
+  //     this.efx.reverb,
+  //     postEfxOut
+  //   );
+  //   this.efx.autoFilter.start();
+
+  //   delete this.volume;
+  //   delete this.output;
+  //   this.output = postEfxOut;
+  //   this.volume = postEfxOut.volume;
+  //   this.start();
+  //   console.log(this);
+  // }
 
   repeater(time) {
     if (this.pleaseStop) {

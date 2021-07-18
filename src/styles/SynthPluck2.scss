@@ -16,6 +16,10 @@
     margin: 0 5px;
   }
 
+  .control-group {
+    width: 100%;
+  }
+
   label {
     @include text.label;
   }
