@@ -2,35 +2,41 @@ import * as Tone from "tone";
 import { patterns } from "../../lib/Patterns";
 import Debug from "debug";
 
-class SynthPluck2 extends Tone.MonoSynth {
+class SynthPluck2 extends Tone.PolySynth {
   constructor(options = {}) {
     super(
       Object.assign(
         {
+          voice: Tone.MonoSynth,
           noteIndex: 0,
-          volume: -0,
-          oscillator: {
-            type: "square",
-          },
-          envelope: {
-            attack: 0.01,
-            decay: 1,
-            sustain: 0,
-            release: 0.2,
-          },
-          filter: {
-            Q: 0.3,
-            rolloff: -24,
-            type: "lowpass",
-          },
-          filterEnvelope: {
-            attack: 1,
-            baseFrequency: 300,
-            decay: 1,
-            exponent: 2,
-            octaves: 3,
-            release: 3,
-            sustain: 1,
+          maxPolyphony: 4,
+          volume: 0,
+          options: {
+            oscillator: {
+              type: "square",
+            },
+            envelope: {
+              attack: 0.01,
+              decay: 1,
+              decayCurve: "linear",
+              sustain: 0,
+              release: 0.2,
+              releaseCurve: "linear",
+            },
+            filter: {
+              Q: 0.3,
+              rolloff: -24,
+              type: "lowpass",
+            },
+            filterEnvelope: {
+              attack: 1,
+              baseFrequency: 300,
+              decay: 1,
+              exponent: 2,
+              octaves: 3,
+              release: 3,
+              sustain: 1,
+            },
           },
         },
         options
