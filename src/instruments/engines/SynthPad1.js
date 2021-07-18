@@ -69,6 +69,14 @@ export default class SynthPad1 extends Tone.DuoSynth {
     };
 
     this.preEfxVolume = this.volume;
+
+    this.playing = false;
+    this.transport = options.transport || Tone.getTransport();
+
+    return this;
+  }
+
+  postInit() {
     const postEfxVolume = new Volume();
     this.chain(
       this.efx.distortion,
@@ -79,13 +87,8 @@ export default class SynthPad1 extends Tone.DuoSynth {
     delete this.volume;
     delete this.output;
     this.output = postEfxVolume;
-    this.volume = this.output.volume;
-
-    this.noteIndex = 0;
-    this.playing = false;
-    this.transport = options.transport || Tone.getTransport();
-
-    return this;
+    this.volume = postEfxVolume.volume;
+    this.start();
   }
 
   repeater(time) {
