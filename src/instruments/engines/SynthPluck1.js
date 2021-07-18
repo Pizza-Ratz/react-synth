@@ -1,7 +1,7 @@
 import * as Tone from "tone";
 import { patterns } from "../../lib/Patterns";
 
-export class SynthPluck1 extends Tone.PolySynth {
+export default class SynthPluck1 extends Tone.PolySynth {
   constructor(options = {}) {
     super(
       Object.assign(
