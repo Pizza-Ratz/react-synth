@@ -4,58 +4,51 @@ import SynthPluckInst from "../../instruments/engines/SynthPluck2";
 import Dial from "../../components/Dial";
 import "../../styles/SynthPluck2.scss";
 import BusContext from "../../contexts/BusContext";
-
-// does log^10(val), where val is in 0-100000 => 0-5
-function linearToLog(val) {
-  return val > 0 ? Math.log10(Math.abs(val)) : 0;
-}
-
-// turns 0-100000 into ~ -110-0 db
-function linearToDecibels(val = 0) {
-  // console.log(
-  //   `${val} -> ${linearToLog(val)} => ${20 * linearToLog(val) - 100}`
-  // );
-  return 20 * linearToLog(val) - 100;
-}
+import { dBToKnob, knobToDB } from "../../lib/transformers";
+import * as Tone from "tone";
 
 const SynthPluck2 = () => {
   const [synth] = React.useState(new SynthPluckInst());
+  const [meter] = React.useState(new Tone.Meter());
   const bus = React.useContext(BusContext);
 
   React.useEffect(() => {
+    meter.normalRange = true;
     synth.output.connect(bus);
+    synth.output.connect(meter);
     synth.start();
     return () => {
       synth.stop();
     };
-  }, [synth, bus]);
+  }, [synth, bus, meter]);
 
   return (
     <div className={`synth-pluck-2`}>
       <h3>Fantasy</h3>
       <Dial
         min={0}
-        max={100000}
-        onChange={(val) => {
-          synth.volume.value = linearToDecibels(val);
-        }}
+        max={1000}
+        value={dBToKnob(synth.volume.value)}
+        onChange={(val) => (synth.volume.value = knobToDB(val, 1000))}
+        color={true}
+        colorFn={meter.getValue.bind(meter)}
       >
         <label>Volume</label>
       </Dial>
       <Dial
         min={1}
         max={100}
-        value={synth.efx.distortion.wet.value}
+        value={Math.floor(synth.efx.distortion.wet.value) * 100}
         onChange={(val) =>
           (synth.efx.distortion.wet.value = Math.abs(val / 100))
         }
       >
-        <label>cutoff</label>
+        <label>distortion</label>
       </Dial>
       <Dial
         min={0}
         max={100}
-        value={synth.efx.reverb.wet.value}
+        value={Math.floor(synth.efx.reverb.wet.value) * 100}
         onChange={(val) => (synth.efx.reverb.wet.value = Math.abs(val / 100))}
       >
         <label>reverb</label>
@@ -63,7 +56,7 @@ const SynthPluck2 = () => {
       <Dial
         min={0}
         max={100}
-        value={synth.efx.delay.feedback.value}
+        value={Math.floor(synth.efx.delay.feedback.value) * 100}
         onChange={(val) =>
           (synth.efx.delay.feedback.value = Math.abs(val / 100))
         }
