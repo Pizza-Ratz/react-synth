@@ -37,11 +37,15 @@ class SynthPluck2 extends Tone.MonoSynth {
       )
     );
 
-    this.debug = Debug("synth:pluck2");
+    this.logger = Debug("synth:pluck2");
 
     this.efx = {
       distortion: new Tone.Distortion(0),
-      delay: new Tone.FeedbackDelay("8n.", 0.3),
+      delay: new Tone.FeedbackDelay({
+        duration: "8n",
+        feedback: 0.3,
+        wet: 0.3,
+      }),
       pan: new Tone.Panner({
         pan: 0,
       }),
@@ -52,7 +56,6 @@ class SynthPluck2 extends Tone.MonoSynth {
       }),
       gain: new Tone.Gain(1),
     };
-    this.efx.delay.wet.value = 0.2;
 
     this.preEfxVol = this.volume;
     const postEfxOut = new Tone.Volume();
@@ -76,13 +79,13 @@ class SynthPluck2 extends Tone.MonoSynth {
 
     this.transport = this.transport || Tone.getTransport();
 
-    this.debug("Ready");
+    this.logger("ready");
 
     return this;
   }
 
   repeater(time) {
-    this.debug("note");
+    this.logger("note");
     if (this.pleaseStop) {
       this.pleaseStop = false;
       return;
@@ -93,7 +96,7 @@ class SynthPluck2 extends Tone.MonoSynth {
   }
 
   start() {
-    this.debug("start");
+    this.logger("start");
     this.pleaseStop = false;
     this.noteIndex = 0;
     this.nextEvent = this.transport.scheduleRepeat((time) => {
@@ -102,14 +105,14 @@ class SynthPluck2 extends Tone.MonoSynth {
   }
 
   stop() {
-    this.debug("stop");
+    this.logger("stop");
     this.pleaseStop = true;
     if (this.nextEvent) this.transport.cancel(this.nextEvent);
     delete this.nextEvent;
   }
 
   dispose() {
-    this.debug("dispose");
+    this.logger("dispose");
     for (const effect of Object.values(this.efx)) {
       effect.dispose();
     }

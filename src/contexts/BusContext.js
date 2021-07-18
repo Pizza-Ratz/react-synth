@@ -26,11 +26,11 @@ export const BusContextProvider = ({ name = "", children }) => {
 
   channel.connect(parentBus);
 
-  if (debug && debug.enabled) {
-    const meter = new Tone.Meter();
-    channel.connect(meter);
-    setInterval(() => debug(meter.getValue()), 1000);
-  }
+  // if (debug && debug.enabled) {
+  //   const meter = new Tone.Meter();
+  //   channel.connect(meter);
+  //   setInterval(() => debug(meter.getValue()), 1000);
+  // }
 
   return <BusContext.Provider value={channel}>{children}</BusContext.Provider>;
 };
