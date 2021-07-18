@@ -5,40 +5,36 @@ import Dial from "../../components/Dial";
 import "../../styles/SynthPad1.scss";
 import ControlGroup from "../../components/ControlGroup";
 import BusContext from "../../contexts/BusContext";
-
-// does log^10(val), where val is in 0-100000 => 0-5
-function linearToLog(val) {
-  return val > 0 ? Math.log10(Math.abs(val)) : 0;
-}
-
-// turns 0-5 into ~ -110-0 db
-function scaleGain(val = 0) {
-  console.log(`${val} -> ${linearToLog(val)} => ${20 * linearToLog(val) - 80}`);
-  return 20 * linearToLog(val) - 80;
-}
+import { knobToDB, dBToKnob } from "../../lib/transformers";
+import * as Tone from "tone";
 
 const SMALL_KNOB_SIZE = 30;
 
 const SynthPad1 = () => {
   const [synth] = React.useState(new engine());
+  const [meter] = React.useState(new Tone.Meter());
   const master = React.useContext(BusContext);
 
   React.useEffect(() => {
     synth.start();
     synth.output.connect(master);
+    synth.output.connect(meter);
+    meter.normalRange = true;
     return () => {
       synth.stop();
     };
-  }, [synth, master]);
+  }, [synth, master, meter]);
 
   return (
     <div className={`synth-pad-1`}>
-      <h3>Cello</h3>
+      <h3>Sizzle</h3>
       <Dial
         min={0}
         max={1000}
-        val={synth.volume.value}
-        onChange={(val) => (synth.volume.value = scaleGain(val * 10))}
+        color={true}
+        colorFn={meter.getValue.bind(meter)}
+        value={dBToKnob(synth.volume.value)}
+        onChange={(val) => (synth.volume.value = knobToDB(val))}
       >
         <label>Volume</label>
       </Dial>
@@ -47,75 +43,45 @@ const SynthPad1 = () => {
           size={40}
           min={0}
           max={100}
-          val={synth.preEfxVolume.value}
-          color={false}
+          val={Math.floor(synth.preEfxVolume.value) * 100}
           onChange={(val) => (synth.preEfxVolume.value = val / 100)}
         >
-          <label>pre-efx gain</label>
+          <label>pre-efx vol</label>
         </Dial>
-        <Dial
+        {/* <Dial
           size={40}
-          val={synth.harmonicity.value * 100}
-          color={true}
+          val={Math.floor(synth.harmonicity.value) * 100}
           onChange={(val) => (synth.harmonicity.value = val / 100)}
         >
           <label>harmonicity</label>
-        </Dial>
+        </Dial> */}
       </div>
       <div className="voices">
-        <ControlGroup label="Voice 0">
-          <ControlGroup label="filterEnv">
+        <ControlGroup label="Effects">
+          <ControlGroup label="Reverb">
             <Dial
               size={SMALL_KNOB_SIZE}
               min={0}
               max={100}
-              val={synth.voice0.filterEnvelope.value}
+              val={synth.efx.reverb.wet.value * 100}
               color={false}
               onChange={(val) =>
-                synth.voice0.filterEnvelope.set({
-                  baseFrequency: Math.abs(val * 100),
-                })
+                (synth.efx.reverb.wet.value = Math.abs(val / 100))
               }
             >
-              <label>frequency</label>
+              <label>Reverb Wet</label>
             </Dial>
-            <Dial
-              size={SMALL_KNOB_SIZE}
-              min={0}
-              max={20}
-              val={synth.voice0.filterEnvelope.exponent}
-              color={false}
-              onChange={(val) => (synth.voice0.filterEnvelope.exponent = val)}
-            >
-              <label>exponent</label>
-            </Dial>
-          </ControlGroup>
-        </ControlGroup>
-        <ControlGroup label="Voice 1">
-          <ControlGroup label="filterEnv">
             <Dial
               size={SMALL_KNOB_SIZE}
               min={0}
               max={100}
-              val={synth.voice1.filterEnvelope.value}
+              val={Math.floor(synth.efx.delay.wet.value) * 100}
               color={false}
               onChange={(val) =>
-                synth.voice1.filterEnvelope.set({
-                  baseFrequency: Math.abs(val * 100),
-                })
+                (synth.efx.delay.wet.value = Math.abs(val / 100))
               }
             >
-              <label>frequency</label>
-            </Dial>
-            <Dial
-              size={SMALL_KNOB_SIZE}
-              min={0}
-              max={20}
-              val={synth.voice1.filterEnvelope.exponent}
-              color={false}
-              onChange={(val) => (synth.voice1.filterEnvelope.exponent = val)}
-            >
-              <label>exponent</label>
+              <label>Delay Wet</label>
             </Dial>
           </ControlGroup>
         </ControlGroup>

@@ -4,17 +4,6 @@ import engine from "../engines/SynthPad2";
 import Fader from "../../components/Fader";
 import BusContext from "../../contexts/BusContext";
 
-// does log^10(val), where val is in 0-100000 => 0-5
-function linearToLog(val) {
-  return val > 0 ? Math.log10(Math.abs(val)) : 0;
-}
-
-// turns 0-5 into ~ -110-0 db
-function scaleGain(val = 0) {
-  // console.log(`${val} -> ${linearToLog(val)} => ${(60 * linearToLog(val)) - 300}`)
-  return 20 * linearToLog(val) - 100;
-}
-
 const SynthPad2 = ({ className = "synthPad2" }) => {
   const [synth] = React.useState(new engine());
   const bus = React.useContext(BusContext);
@@ -27,9 +16,10 @@ const SynthPad2 = ({ className = "synthPad2" }) => {
   return (
     <div className={className}>
       <Fader
-        range={{ min: [0], max: [100000] }}
+        range={{ min: [0], max: [1000] }}
         pips={{}}
-        onValueChange={(val) => (synth.volume.value = scaleGain(val))}
+        value={Math.floor(synth.volume.value) * 1000}
+        onValueChange={(val) => (synth.volume.value = val / 1000)}
         tooltips={false}
         label="Volume"
       />
