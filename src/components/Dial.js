@@ -20,7 +20,24 @@ class Dial extends React.Component {
         props.value
       )
     );
-    this.state = { deg: this.currentDeg };
+    this.innerEdgeGlow = Math.random() * 100;
+    const colorAmt = this.color && this.colorFn ? this.colorFn() : 1;
+    this.state = { deg: this.currentDeg, colorAmt };
+  }
+
+  componentDidMount() {
+    const { color, colorFn } = this.props;
+
+    if (color && typeof colorFn === "function") {
+      this.stopAnimationTimer = setInterval(() => {
+        const colorAmt = colorFn();
+        this.setState({ colorAmt });
+      }, 100);
+    }
+  }
+
+  componentWillUnmount() {
+    this.stopAnimationTimer && this.stopAnimationTimer();
   }
 
   startDrag = (e) => {
@@ -71,6 +88,21 @@ class Dial extends React.Component {
     );
   };
 
+  /**
+   * this might be more efficient if the gradient were calculated once for maximum
+   * brightness and then allowing colorAmt to modulate brightness
+   */
+  renderGlow = () => {
+    const maximumGlow = this.state.colorAmt
+      ? Math.floor(this.state.colorAmt * 360)
+      : this.currentDeg;
+    const inner = maximumGlow;
+    const mid = Math.floor(maximumGlow / 5);
+    const innerEdge = this.innerEdgeGlow;
+    const outerEdge = Math.floor(maximumGlow / 36);
+    return `radial-gradient(100% 70%,hsl(210,${inner}%, ${mid}%),hsl(${innerEdge},20%,${outerEdge}%))`;
+  };
+
   renderTicks = () => {
     let ticks = [];
     const incr = this.fullAngle / this.props.numTicks;
@@ -96,7 +128,7 @@ class Dial extends React.Component {
   };
 
   render() {
-    let { numTicks, size } = this.props;
+    let { numTicks, size, color } = this.props;
     let kStyle = {
       width: size,
       height: size,
@@ -104,18 +136,8 @@ class Dial extends React.Component {
     let iStyle = this.dcpy(kStyle);
     let oStyle = this.dcpy(kStyle);
     oStyle.margin = this.margin;
-    if (this.props.color) {
-      oStyle.backgroundImage =
-        "radial-gradient(100% 70%,hsl(210, " +
-        this.currentDeg +
-        "%, " +
-        this.currentDeg / 5 +
-        "%),hsl(" +
-        Math.random() * 100 +
-        ",20%," +
-        this.currentDeg / 36 +
-        "%))";
-    }
+    if (color) oStyle.backgroundImage = this.renderGlow();
+
     iStyle.transform = "rotate(" + this.state.deg + "deg)";
 
     // let margin = size + numTicks ? "5px" : 0;
@@ -165,6 +187,8 @@ Dial.defaultProps = {
   numTicks: 25,
   degrees: 270,
   value: 10,
+  color: false,
+  colorFn: undefined,
 };
 
 Dial.propTypes = {
