@@ -48,8 +48,8 @@ const SynthPluck2 = () => {
         <Dial
           min={100}
           max={2500}
-          value={Math.floor(synth.filter.frequency.value)}
-          onChange={(val) => (synth.filter.frequency.value = val)}
+          value={synth.filter.frequency.baseFrequency}
+          onChange={(val) => (synth.filter.frequency.baseFrequency = val)}
         >
           <label>cutoff</label>
         </Dial>
@@ -57,7 +57,7 @@ const SynthPluck2 = () => {
           min={0}
           max={100}
           value={Math.floor(synth.filter.Q.value) * 100}
-          onChange={(val) => (synth.filter.Q.value = val / 100)}
+          onChange={(val) => (synth.filter.Q.value = Math.abs(val / 100))}
         >
           <label>Q</label>
         </Dial>

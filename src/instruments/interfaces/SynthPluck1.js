@@ -60,9 +60,9 @@ const SynthPluck1 = () => {
         <Dial
           size={30}
           min={0}
-          max={1000}
-          value={Math.floor(synth.efx.autoFilter.filter.Q.value) * 1000}
-          onChange={(val) => (synth.efx.autoFilter.filter.Q.value = val / 1000)}
+          max={100}
+          value={Math.floor(synth.efx.autoFilter.filter.Q.value) * 100}
+          onChange={(val) => (synth.efx.autoFilter.filter.Q.value = Math.abs(val / 100))}
         >
           <label>Q</label>
         </Dial>
