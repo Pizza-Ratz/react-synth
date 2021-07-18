@@ -14,14 +14,6 @@ const SynthPluck1 = () => {
   const [meter] = React.useState(new Tone.Meter());
 
   React.useEffect(() => {
-    // synth.chain(
-    //   synth.efx.vibrato,
-    //   synth.efx.dist,
-    //   synth.efx.autoFilter,
-    //   synth.efx.delay,
-    //   synth.efx.reverb,
-    //   synth.postEfxVolume
-    // );
     synth.output.connect(bus);
     synth.output.connect(meter);
     meter.normalRange = true;

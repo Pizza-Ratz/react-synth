@@ -69,6 +69,7 @@ export default class SynthPluck1 extends Tone.PolySynth {
         sustain: 0.07,
       },
     });
+
     this.pattern = options.pattern || patterns.eternity;
     this.noteIndex = 0;
 
@@ -78,9 +79,6 @@ export default class SynthPluck1 extends Tone.PolySynth {
         duration: "8n",
         feedback: 0.45,
         wet: 0.3,
-      }),
-      pan: new Tone.Panner({
-        pan: 0,
       }),
       reverb: new Tone.Freeverb({
         dampening: 10000,
@@ -105,12 +103,37 @@ export default class SynthPluck1 extends Tone.PolySynth {
         depth: 0.16,
         type: "sine",
       }),
-      gain: new Tone.Gain(0.2),
     };
+
     this.noteIndex = 0;
     this.playing = false;
 
     this.transport = options.transport || Tone.getTransport();
+
+    // schedule post-init to run after the instance exists
+    setInterval(() => this.postInit.bind(this));
+
+    return this;
+  }
+
+  postInit() {
+    console.log("running post-init");
+    this.preEfxVolume = this.volume;
+    const postEfxVolume = new Tone.Volume();
+
+    this.chain(
+      this.efx.vibrato,
+      this.efx.dist,
+      this.efx.autoFilter,
+      this.efx.delay,
+      this.efx.reverb,
+      postEfxVolume
+    );
+
+    delete this.volume;
+    delete this.output;
+    this.output = postEfxVolume;
+    this.volume = postEfxVolume.volume;
   }
 
   repeater(time) {
