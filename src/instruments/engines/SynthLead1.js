@@ -5,54 +5,53 @@ import { patterns } from "../../lib/Patterns";
 /**
  * A bright FM pad with a gentle attack.
  */
-export default class SynthLead1 extends Tone.DuoSynth {
+export default class SynthLead1 extends Tone.PolySynth {
   constructor(options = {}) {
     super(
       Object.assign(
         {
-          harmonicity: 0.5,
           volume: -10,
-          voice0: {
-            oscillator: { type: "sawtooth" },
-            envelope: {
-              attack: 4,
-              decay: 1,
-              sustain: 0.4,
-              release: 7,
+          options: {
+            harmonicity: 0.5,
+            voice0: {
+              oscillator: { type: "sawtooth" },
+              envelope: {
+                attack: 4,
+                decay: 1,
+                sustain: 0.4,
+                release: 7,
+              },
+              filterEnvelope: {
+                baseFrequency: 400,
+                attack: 0.01,
+                decay: 0,
+                sustain: 1,
+                release: 0.53,
+              },
             },
-            filterEnvelope: {
-              baseFrequency: 400,
-              attack: 0.01,
-              decay: 0,
-              sustain: 1,
-              release: 0.53,
+            voice1: {
+              oscillator: { type: "sine" },
+              envelope: {
+                attack: 3,
+                decay: 1,
+                sustain: 0.4,
+                release: 7,
+              },
+              filterEnvelope: {
+                baseFrequency: 1200,
+                attack: 0.01,
+                decay: 0.5,
+                sustain: 1,
+                release: 2,
+              },
             },
-          },
-          voice1: {
-            oscillator: { type: "sine" },
-            envelope: {
-              attack: 3,
-              decay: 1,
-              sustain: 0.4,
-              release: 7,
-            },
-            filterEnvelope: {
-              baseFrequency: 1200,
-              attack: 0.01,
-              decay: 0.5,
-              sustain: 1,
-              release: 2,
-            },
-          },
-          vibratoRate: 0.5,
-          vibratoAmount: 0.1,
+            vibratoRate: 0.5,
+            vibratoAmount: 0.1,
+          }
         },
         options
       )
     );
-
-    this.pattern = options.pattern || patterns.prelude;
-    this.noteIndex = 0;
 
     this.efx = {
       distortion: new Tone.Distortion(0),
@@ -61,26 +60,31 @@ export default class SynthLead1 extends Tone.DuoSynth {
         feedback: 0.3,
         wet: 0.2,
       }),
-      reverb: new Tone.Freeverb({
-        dampening: 2000,
-        roomSize: 0.9,
-        wet: 0.3,
+      reverb: new Tone.Reverb({
+        // convolver: this.efx.convolver,
+        decay: 4,
+        preDelay: 0.2,
+        wet: 0.25,
       }),
+      // reverb: new Tone.Freeverb({
+      //   dampening: 2000,
+      //   roomSize: 0.9,
+      //   wet: 0.3,
+      // }),
     };
 
-    this.preEfxVolume = this.volume;
-    const postEfxVolume = new Volume();
-    this.chain(
-      this.efx.distortion,
-      this.efx.delay,
-      this.efx.reverb,
-      postEfxVolume
-    );
-    delete this.volume;
-    delete this.output;
-    this.output = postEfxVolume;
-    this.volume = this.output.volume;
+    // this.preEfxVolume = this.volume;
+    // const postEfxVolume = new Volume();
+    // this.chain(
+    //   this.efx.distortion,
+    //   this.efx.delay,
+    //   this.efx.reverb,
+    //   postEfxVolume
+    // );
 
+    this.efx.reverb.generate();
+    this.pattern = options.pattern || patterns.prelude;
+    this.preEfxOut = this.output
     this.noteIndex = 0;
     this.playing = false;
     this.transport = options.transport || Tone.getTransport();

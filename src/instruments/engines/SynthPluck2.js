@@ -2,35 +2,37 @@ import * as Tone from "tone";
 import { patterns } from "../../lib/Patterns";
 import Debug from "debug";
 
-class SynthPluck2 extends Tone.PolySynth {
+export default class SynthPluck2 extends Tone.PolySynth {
   constructor(options = {}) {
     super(
       Object.assign(
         {
           voice: Tone.MonoSynth,
-          noteIndex: 0,
-          maxPolyphony: 4,
+          maxPolyphony: 8,
           volume: 0,
           options: {
             oscillator: {
-              type: "square",
+              type: "fmsquare",
+              harmonicity: 2.5,
             },
             envelope: {
-              attack: 0.01,
-              decay: 1,
+              attack: 0.03,
+              attackCurve: "exponential",
+              decay: 0.3,
               decayCurve: "linear",
               sustain: 0,
               release: 0.2,
               releaseCurve: "linear",
             },
             filter: {
-              Q: 0.3,
+              Q: 1,
               rolloff: -24,
               type: "lowpass",
             },
             filterEnvelope: {
-              attack: 1,
-              baseFrequency: 300,
+              attack: 0,
+              attackCurve: "linear",
+              baseFrequency: 1200,
               decay: 1,
               exponent: 2,
               octaves: 3,
@@ -46,52 +48,69 @@ class SynthPluck2 extends Tone.PolySynth {
     this.logger = Debug("synth:pluck2");
 
     this.efx = {
-      distortion: new Tone.Distortion(0),
+      dist: new Tone.Distortion({
+        distortion: 0.5,
+        wet: 0.06,
+      }),
       delay: new Tone.FeedbackDelay({
-        duration: "8n",
-        feedback: 0.3,
-        wet: 0.3,
+        delayTime: "8n.",
+        feedback: 0.2,
+        wet: 0.25,
       }),
-      pan: new Tone.Panner({
-        pan: 0,
+      reverb: new Tone.Reverb({
+        // convolver: this.efx.convolver,
+        decay: 4,
+        preDelay: 0.1,
+        wet: 0.1,
       }),
-      reverb: new Tone.Freeverb({
-        dampening: 600,
-        roomSize: 0.9,
-        wet: 0.05,
+      phaser: new Tone.Phaser({
+        Q: 0.05,
+        frequency: 0.5,
+        octaves: 3,
+        baseFrequency: 440,
+        wet: 0.7,
       }),
-      gain: new Tone.Gain(1),
+      // chorus: new Tone.Chorus({
+      //   frequency: 60,
+      //   delayTime: 3.5,
+      //   depth: 1,
+      //   type: "sine",
+      //   spread: 180,
+      //   wet: 1
+      // }),
+      eq: new Tone.EQ3({
+        low: 0,
+        lowFrequency: 130,
+        mid: -10,
+        midFrequency: 500,
+        high: -5,
+        highFrequency: 1000
+      }),
+      // eq2: new Tone.EQ3({
+      //   low: 0,
+      //   lowFrequency: 80,
+      //   mid: -3,
+      //   midFrequency: 400,
+      //   high: -5,
+      //   highFrequency: 10000
+      // })
+      // gain: new Tone.Gain(0),
     };
 
-    this.preEfxVol = this.volume;
-    const postEfxOut = new Tone.Volume();
-
-    this.chain(
-      this.efx.gain,
-      this.efx.distortion,
-      this.efx.delay,
-      this.efx.reverb,
-      postEfxOut
-    );
-
-    delete this.volume;
-    delete this.output;
-    this.output = postEfxOut;
-    this.volume = this.output.volume;
-
-    this.pattern = options.pattern || patterns.fantasy;
+    this.pattern = options.pattern || patterns.prelude;
+    
+    this.efx.reverb.generate();
+    // this.efx.convolver.connect(this.efx.reverb.convolver);
+    this.preEfxOut = this.output;
     this.noteIndex = 0;
     this.playing = false;
 
-    this.transport = this.transport || Tone.getTransport();
-
-    this.logger("ready");
+    this.transport = options.transport || Tone.getTransport();
 
     return this;
   }
 
   repeater(time) {
-    this.logger("note");
     if (this.pleaseStop) {
       this.pleaseStop = false;
       return;
@@ -102,7 +121,6 @@ class SynthPluck2 extends Tone.PolySynth {
   }
 
   start() {
-    this.logger("start");
     this.pleaseStop = false;
     this.noteIndex = 0;
     this.nextEvent = this.transport.scheduleRepeat((time) => {
@@ -111,19 +129,15 @@ class SynthPluck2 extends Tone.PolySynth {
   }
 
   stop() {
-    this.logger("stop");
     this.pleaseStop = true;
     if (this.nextEvent) this.transport.cancel(this.nextEvent);
     delete this.nextEvent;
   }
 
   dispose() {
-    this.logger("dispose");
     for (const effect of Object.values(this.efx)) {
       effect.dispose();
     }
     super.dispose();
   }
 }
-
-export default SynthPluck2;

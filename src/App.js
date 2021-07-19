@@ -6,6 +6,7 @@ import SynthPad1 from "./instruments/interfaces/SynthPad1";
 import SynthPluck1 from "./instruments/interfaces/SynthPluck1";
 import SynthPluck2 from "./instruments/interfaces/SynthPluck2";
 import SynthLead2 from "./instruments/interfaces/SynthLead2";
+import SynthLead1 from "./instruments/interfaces/SynthLead1";
 import SynthSaw1 from "./instruments/interfaces/SynthSaw1";
 
 import { BusContextProvider } from "./contexts/BusContext";
@@ -32,10 +33,11 @@ function App() {
               <Panner3D />
             </div>
           </div>
-          {/* <SynthPad1 />
-          <SynthPluck1 />
-          <SynthPluck2 /> */}
-          <SynthLead2 />
+          {/* <SynthLead1 /> */}
+          {/* <SynthPad1 /> */}
+          <SynthPluck1 /> 
+          {/* <SynthPluck2 /> */}
+          {/* <SynthSaw1 /> */}
         </BusContextProvider>
       </main>
     </div>

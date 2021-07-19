@@ -9,9 +9,9 @@ export default class SynthSaw1 extends Tone.PolySynth {
     super(
       Object.assign(
         {
+          voice: Tone.MonoSynth,
           maxPolyphony: 8,
           volume: 0,
-          voice: Tone.MonoSynth,
           options: {
             oscillator: {
               type: "fatsawtooth",
@@ -46,8 +46,6 @@ export default class SynthSaw1 extends Tone.PolySynth {
       )
     );
 
-    this.pattern = options.pattern || patterns.alive;
-
     this.efx = {
       gain: new Tone.Gain(1),
       dist: new Tone.Distortion(0),
@@ -56,9 +54,7 @@ export default class SynthSaw1 extends Tone.PolySynth {
         feedback: 0.35,
         wet: 0.15,
       }),
-      convolver: new Tone.Convolver("../../assets/impulse/Hangar.mp3"),
       reverb: new Tone.Reverb({
-        // convolver: this.efx.convolver,
         decay: 3,
         preDelay: 0.1,
         wet: 0.1,
@@ -90,6 +86,8 @@ export default class SynthSaw1 extends Tone.PolySynth {
       }),
     };
 
+    this.pattern = options.pattern || patterns.alive;
+    
     this.efx.reverb.generate();
     // this.efx.convolver.connect(this.efx.reverb.convolver);
     this.efx.lfo1.connect(this.efx.vibrato.depth);

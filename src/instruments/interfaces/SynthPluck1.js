@@ -14,18 +14,24 @@ const SynthPluck1 = () => {
   const [meter] = React.useState(new Tone.Meter());
 
   React.useEffect(() => {
-    // synth.chain(
-    //   synth.efx.vibrato,
-    //   synth.efx.dist,
-    //   synth.efx.autoFilter,
-    //   synth.efx.delay,
-    //   synth.efx.reverb,
-    //   synth.postEfxVolume
-    // );
-    synth.output.connect(bus);
+    synth.chain(
+      synth.efx.vibrato,
+      synth.efx.dist,
+      synth.efx.eq,
+      synth.efx.autoFilter,
+      synth.efx.delay,
+      synth.efx.reverb,
+      // synth.efx.eq2,
+      // synth.efx.chorus,
+      bus
+    );
+    // synth.efx.reverb.generate();
+    synth.start();
+    // synth.postInit();
+    // synth.connect(bus);
+    //synth.output.connect(bus);
     synth.output.connect(meter);
     meter.normalRange = true;
-    synth.start();
     return () => {
       synth.stop();
     };
@@ -56,11 +62,11 @@ const SynthPluck1 = () => {
         </Dial>
         <Dial
           min={0}
-          max={1000}
-          value={Math.floor(synth.efx.autoFilter.filter.Q.value) * 1000}
-          onChange={(val) => (synth.efx.autoFilter.filter.Q.value = val / 1000)}
+          max={100}
+          value={Math.floor(synth.efx.autoFilter.depth.value) * 100}
+          onChange={(val) => (synth.efx.autoFilter.depth.value = Math.abs(val / 100))}
         >
-          <label>Q</label>
+          <label>depth</label>
         </Dial>
       </ControlGroup>
       <Dial
@@ -74,12 +80,12 @@ const SynthPluck1 = () => {
       <Dial
         min={0}
         max={100}
-        value={Math.floor(synth.efx.delay.feedback.value) * 100}
+        value={Math.floor(synth.efx.delay.wet.value) * 100}
         onChange={(val) =>
-          synth.efx.delay.set({ feedback: Math.abs(val / 100) })
+          synth.efx.delay.set({ wet: Math.abs(val / 100) })
         }
       >
-        <label>delay feedback</label>
+        <label>delay</label>
       </Dial>
     </div>
   );

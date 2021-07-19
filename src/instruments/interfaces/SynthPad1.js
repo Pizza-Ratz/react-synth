@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import engine from "../engines/SynthPad1";
+import SynthPad1Inst from "../engines/SynthPad1";
 import Dial from "../../components/Dial";
 import "../../styles/SynthPad1.scss";
 import ControlGroup from "../../components/ControlGroup";
@@ -11,19 +11,32 @@ import * as Tone from "tone";
 const SMALL_KNOB_SIZE = 30;
 
 const SynthPad1 = () => {
-  const [synth] = React.useState(new engine());
+  const [synth] = React.useState(new SynthPad1Inst());
+  const bus = React.useContext(BusContext);
   const [meter] = React.useState(new Tone.Meter());
-  const master = React.useContext(BusContext);
 
   React.useEffect(() => {
+    synth.chain(
+      synth.efx.dist,
+      // synth.efx.eq,
+      // synth.efx.autoFilter,
+      synth.efx.delay,
+      synth.efx.reverb,
+      // synth.efx.eq2,
+      // synth.efx.chorus,
+      bus
+    );
+    // synth.efx.reverb.generate();
     synth.start();
-    synth.output.connect(master);
+    // synth.postInit();
+    // synth.connect(bus);
+    //synth.output.connect(bus);
     synth.output.connect(meter);
     meter.normalRange = true;
     return () => {
       synth.stop();
     };
-  }, [synth, master, meter]);
+  }, [synth, bus, meter]);
 
   return (
     <div className={`synth-pad-1`}>
@@ -38,7 +51,7 @@ const SynthPad1 = () => {
       >
         <label>Volume</label>
       </Dial>
-      <div style={{ display: "flex" }}>
+      {/* <div style={{ display: "flex" }}>
         <Dial
           size={40}
           min={0}
@@ -47,7 +60,7 @@ const SynthPad1 = () => {
           onChange={(val) => (synth.preEfxVolume.value = val / 100)}
         >
           <label>pre-efx vol</label>
-        </Dial>
+        </Dial> */}
         {/* <Dial
           size={40}
           val={Math.floor(synth.harmonicity.value) * 100}
@@ -55,7 +68,7 @@ const SynthPad1 = () => {
         >
           <label>harmonicity</label>
         </Dial> */}
-      </div>
+      {/* </div> */}
       <div className="voices">
         <ControlGroup label="Effects">
           <ControlGroup label="Reverb">

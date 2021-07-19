@@ -10,7 +10,7 @@ export default class SynthPad1 extends Tone.PolySynth {
     super(
       Object.assign(
         {
-          maxPolyphony: 4,
+          maxPolyphony: 8,
           volume: -20,
           voice: Tone.MonoSynth,
           options: {
@@ -20,17 +20,17 @@ export default class SynthPad1 extends Tone.PolySynth {
               type: "fatsawtooth",
             },
             envelope: {
-              attack: 0.7,
-              decay: 1,
+              attack: 1,
+              decay: 0.5,
               sustain: 0.4,
-              release: 1,
+              release: 1.5,
             },
             filterEnvelope: {
-              baseFrequency: 400,
-              attack: 0.7,
+              baseFrequency: 1100,
+              attack: 0.8,
               decay: 0,
               sustain: 1,
-              release: 0.53,
+              release: 1,
             },
           },
         },
@@ -38,45 +38,36 @@ export default class SynthPad1 extends Tone.PolySynth {
       )
     );
 
-    this.pattern = options.pattern || patterns.eternity;
-    this.noteIndex = 0;
-    this.logger = Debug("synth:pad1");
-
     this.efx = {
       dist: new Tone.Distortion(0),
       delay: new Tone.FeedbackDelay({
-        duration: "8n.",
+        delayTime: "8n.",
         feedback: 0.3,
         wet: 0.2,
       }),
-      reverb: new Tone.Freeverb({
-        dampening: 2000,
-        roomSize: 0.9,
-        wet: 0.3,
+      // reverb: new Tone.Freeverb({
+      //   dampening: 2000,
+      //   roomSize: 0.9,
+      //   wet: 0.3,
+      // }),
+      reverb: new Tone.Reverb({
+        // convolver: this.efx.convolver,
+        decay: 6,
+        preDelay: 0.2,
+        wet: 0.8,
       }),
       // reverb: new Tone.Convolver({
       //   url: "../../assets/impulse/OutdoorStadium.mp3",
       // }),
     };
 
-    this.preEfxVolume = this.volume;
-    const postEfxVolume = new Tone.Volume();
-    this.output.chain(
-      this.efx.dist,
-      this.efx.delay,
-      this.efx.reverb,
-      postEfxVolume
-    );
-    delete this.volume;
-    delete this.output;
-    this.output = postEfxVolume;
-    this.volume = this.output.volume;
-
+    this.efx.reverb.generate();
+    this.pattern = options.pattern || patterns.eternity;
+    this.preEfxOut = this.output
     this.noteIndex = 0;
     this.playing = false;
     this.transport = options.transport || Tone.getTransport();
 
-    this.logger("ready");
     return this;
   }
 
@@ -91,7 +82,6 @@ export default class SynthPad1 extends Tone.PolySynth {
   }
 
   start() {
-    this.logger("start");
     this.pleaseStop = false;
     this.noteIndex = 0;
     this.nextEvent = this.transport.scheduleRepeat((time) => {
@@ -100,13 +90,11 @@ export default class SynthPad1 extends Tone.PolySynth {
   }
 
   stop() {
-    this.logger("stop");
     this.pleaseStop = true;
     if (this.nextEvent) this.transport.cancel(this.nextEvent);
   }
 
   dispose() {
-    this.logger("dispose");
     for (const effect of Object.values(this.efx)) {
       effect.disposed || effect.dispose();
     }

@@ -85,15 +85,16 @@ export default class SynthLead2 extends Tone.PolySynth {
         },
       }),
       lfo1: new Tone.LFO('8n.', 0, 0.8),
-      lfo2: new Tone.LFO('8n.', 7, 11),
+      lfo2: new Tone.LFO('8n.', 5.5, 10),
       vibrato: new Tone.Vibrato({
         maxDelay: 0.002,
-        frequency: 7,
+        frequency: 5.5,
         depth: 0,
         type: "sine",
       }),
     };
 
+    this.efx.convolver.wet = 0.4;
     this.efx.reverb.generate();
     // this.efx.convolver.connect(this.efx.reverb.convolver);
     this.efx.lfo1.connect(this.efx.vibrato.depth);
@@ -106,27 +107,6 @@ export default class SynthLead2 extends Tone.PolySynth {
 
     return this;
   }
-
-  // this doesn't work for polysynths?
-  // postInit() {
-  //   const postEfxOut = new Tone.Volume();
-  //   this.chain(
-  //     this.efx.vibrato,
-  //     this.efx.dist,
-  //     this.efx.autoFilter,
-  //     this.efx.delay,
-  //     this.efx.reverb,
-  //     postEfxOut
-  //   );
-  //   this.efx.autoFilter.start();
-
-  //   delete this.volume;
-  //   delete this.output;
-  //   this.output = postEfxOut;
-  //   this.volume = postEfxOut.volume;
-  //   this.start();
-  //   console.log(this);
-  // }
 
   repeater(time) {
     if (this.pleaseStop) {
