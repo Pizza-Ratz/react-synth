@@ -60,7 +60,7 @@ export default class SynthLead2 extends Tone.PolySynth {
         feedback: 0.35,
         wet: 0.15,
       }),
-      convolver: new Tone.Convolver("../../assets/impulse/Hangar.mp3"),
+      // convolver: new Tone.Convolver("../../assets/impulse/Hangar.mp3"),
       reverb: new Tone.Reverb({
         // convolver: this.efx.convolver,
         decay: 3,
@@ -94,7 +94,6 @@ export default class SynthLead2 extends Tone.PolySynth {
       }),
     };
 
-    this.efx.convolver.wet = 0.4;
     this.efx.reverb.generate();
     // this.efx.convolver.connect(this.efx.reverb.convolver);
     this.efx.lfo1.connect(this.efx.vibrato.depth);

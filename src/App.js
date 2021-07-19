@@ -3,6 +3,7 @@ import "./App.scss";
 import * as Tone from "tone";
 import { ChannelStrip, TransportControls, Panner3D } from "./components";
 import SynthPad1 from "./instruments/interfaces/SynthPad1";
+import SynthPad2 from "./instruments/interfaces/SynthPad2";
 import SynthPluck1 from "./instruments/interfaces/SynthPluck1";
 import SynthPluck2 from "./instruments/interfaces/SynthPluck2";
 import SynthLead2 from "./instruments/interfaces/SynthLead2";
@@ -33,9 +34,9 @@ function App() {
               <Panner3D />
             </div>
           </div>
-          {/* <SynthLead1 /> */}
+          <SynthPad2 />
           {/* <SynthPad1 /> */}
-          <SynthPluck1 /> 
+          {/* <SynthPluck1 />  */}
           {/* <SynthPluck2 /> */}
           {/* <SynthSaw1 /> */}
         </BusContextProvider>

@@ -1,37 +1,52 @@
 import React from "react";
 import PropTypes from "prop-types";
-import engine from "../engines/SynthLead1";
+import SynthLead1Inst from "../engines/SynthLead1";
 import Dial from "../../components/Dial";
 import "../../styles/SynthLead1.scss";
 import ControlGroup from "../../components/ControlGroup";
 import BusContext from "../../contexts/BusContext";
-
-const SMALL_KNOB_SIZE = 30;
+import { dBToKnob, knobToDB } from "../../lib/transformers";
+import * as Tone from "tone";
 
 const SynthLead1 = () => {
-  const [synth] = React.useState(new engine());
-  const master = React.useContext(BusContext);
+  const [synth] = React.useState(new SynthLead1Inst());
+  const bus = React.useContext(BusContext);
+  const [meter] = React.useState(new Tone.Meter());
 
   React.useEffect(() => {
+    synth.chain(
+      synth.efx.eq,
+      synth.efx.gain,
+      synth.efx.dist,
+      synth.efx.delay,
+      synth.efx.reverb,
+      bus
+    );
     synth.start();
-    synth.output.connect(master);
+    // synth.postInit();
+    // synth.connect(bus);
+    synth.output.connect(meter);
+    meter.normalRange = true;
     return () => {
       synth.stop();
     };
-  }, [synth, master]);
+  }, [synth, bus, meter]);
 
   return (
-    <div className={`synth-lead-1`}>
+    <div className={`synth-lead-2`}>
       <h3>Cello</h3>
       <Dial
+        size={50}
         min={0}
         max={1000}
-        val={Math.floor(synth.volume.value) * 1000}
-        onChange={(val) => (synth.volume.value = val / 1000)}
+        value={dBToKnob(synth.volume.value, 1000)}
+        onChange={(val) => (synth.volume.value = knobToDB(val, 1000))}
+        color={true}
+        colorFn={meter.getValue.bind(meter)}
       >
         <label>Volume</label>
       </Dial>
-      <div style={{ display: "flex" }}>
+      {/* <div style={{ display: "flex" }}>
         <Dial
           size={40}
           min={0}
@@ -52,8 +67,8 @@ const SynthLead1 = () => {
         >
           <label>harmonicity</label>
         </Dial>
-      </div>
-      <div className="voices">
+      </div> */}
+      {/* <div className="voices">
         <ControlGroup label="Voice 0">
           <ControlGroup label="filterEnv">
             <Dial
@@ -114,7 +129,7 @@ const SynthLead1 = () => {
             </Dial>
           </ControlGroup>
         </ControlGroup>
-      </div>
+      </div> */}
     </div>
   );
 };
