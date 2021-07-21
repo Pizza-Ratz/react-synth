@@ -77,7 +77,7 @@ class SynthPluck1 extends Tone.PolySynth {
     };
 
     this.efx.reverb.generate();
-    this.pattern = options.pattern || patterns.eternity;
+    this.pattern = options.pattern || patterns.fantasy;
     this.preEfxOut = this.output
     this.noteIndex = 0;
     this.playing = false;

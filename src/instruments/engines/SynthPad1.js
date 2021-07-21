@@ -11,7 +11,7 @@ export default class SynthPad1 extends Tone.PolySynth {
       Object.assign(
         {
           maxPolyphony: 8,
-          volume: -20,
+          volume: 0,
           voice: Tone.MonoSynth,
           options: {
             oscillator: {
@@ -39,26 +39,17 @@ export default class SynthPad1 extends Tone.PolySynth {
     );
 
     this.efx = {
-      dist: new Tone.Distortion(0),
       delay: new Tone.FeedbackDelay({
         delayTime: "8n.",
         feedback: 0.3,
         wet: 0.2,
       }),
-      // reverb: new Tone.Freeverb({
-      //   dampening: 2000,
-      //   roomSize: 0.9,
-      //   wet: 0.3,
-      // }),
       reverb: new Tone.Reverb({
         // convolver: this.efx.convolver,
         decay: 6,
         preDelay: 0.2,
         wet: 0.8,
       }),
-      // reverb: new Tone.Convolver({
-      //   url: "../../assets/impulse/OutdoorStadium.mp3",
-      // }),
     };
 
     this.efx.reverb.generate();

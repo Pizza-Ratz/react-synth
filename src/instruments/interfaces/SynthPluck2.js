@@ -51,34 +51,50 @@ const SynthPluck2 = () => {
       >
         <label>Volume</label>
       </Dial>
-      <Dial
-        min={0}
-        max={100}
-        value={Math.floor(synth.efx.phaser.Q.value) * 100}
-        onChange={(val) =>
-          (synth.efx.phaser.Q.value = Math.abs(val / 100))
-        }
-      >
-        <label>phaser q</label>
-      </Dial>
-      <Dial
-        min={0}
-        max={100}
-        value={Math.floor(synth.efx.reverb.wet.value) * 100}
-        onChange={(val) => (synth.efx.reverb.wet.value = Math.abs(val / 100))}
-      >
-        <label>reverb</label>
-      </Dial>
-      <Dial
-        min={0}
-        max={100}
-        value={Math.floor(synth.efx.delay.wet.value) * 100}
-        onChange={(val) =>
-          (synth.efx.delay.wet.value = Math.abs(val / 100))
-        }
-      >
-        <label>delay</label>
-      </Dial>
+      <ControlGroup label="effects">
+        <Dial
+          min={0}
+          max={100}
+          size={30}
+          value={Math.floor(synth.efx.dist.wet.value) * 100}
+          onChange={(val) =>
+            (synth.efx.dist.wet.value = Math.abs(val / 100))
+          }
+        >
+          <label>distortion</label>
+        </Dial>
+        <Dial
+          min={0}
+          max={100}
+          size={30}
+          value={Math.floor(synth.efx.phaser.Q.value) * 100}
+          onChange={(val) =>
+            (synth.efx.phaser.Q.value = Math.abs(val / 100))
+          }
+        >
+          <label>phaser q</label>
+        </Dial>
+        <Dial
+          min={0}
+          max={100}
+          size={30}
+          value={Math.floor(synth.efx.reverb.wet.value) * 100}
+          onChange={(val) => (synth.efx.reverb.wet.value = Math.abs(val / 100))}
+        >
+          <label>reverb</label>
+        </Dial>
+        <Dial
+          min={0}
+          max={100}
+          size={30}
+          value={Math.floor(synth.efx.delay.wet.value) * 100}
+          onChange={(val) =>
+            (synth.efx.delay.wet.value = Math.abs(val / 100))
+          }
+        >
+          <label>delay</label>
+        </Dial>
+      </ControlGroup>
     </div>
   );
 };

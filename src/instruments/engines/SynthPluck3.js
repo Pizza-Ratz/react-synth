@@ -1,5 +1,5 @@
 import * as Tone from 'tone'
-import { patterns } from './Patterns'
+import { patterns } from "../../lib/Patterns";
 
 class SynthPluck3 extends Tone.Synth {
   constructor(options) {

@@ -17,13 +17,8 @@ const SynthPad1 = () => {
 
   React.useEffect(() => {
     synth.chain(
-      synth.efx.dist,
-      // synth.efx.eq,
-      // synth.efx.autoFilter,
       synth.efx.delay,
       synth.efx.reverb,
-      // synth.efx.eq2,
-      // synth.efx.chorus,
       bus
     );
     // synth.efx.reverb.generate();
@@ -61,7 +56,7 @@ const SynthPad1 = () => {
         >
           <label>pre-efx vol</label>
         </Dial> */}
-        {/* <Dial
+      {/* <Dial
           size={40}
           val={Math.floor(synth.harmonicity.value) * 100}
           onChange={(val) => (synth.harmonicity.value = val / 100)}
@@ -71,32 +66,40 @@ const SynthPad1 = () => {
       {/* </div> */}
       <div className="voices">
         <ControlGroup label="Effects">
-          <ControlGroup label="Reverb">
-            <Dial
-              size={SMALL_KNOB_SIZE}
-              min={0}
-              max={100}
-              val={synth.efx.reverb.wet.value * 100}
-              color={false}
-              onChange={(val) =>
-                (synth.efx.reverb.wet.value = Math.abs(val / 100))
-              }
-            >
-              <label>Reverb Wet</label>
-            </Dial>
-            <Dial
-              size={SMALL_KNOB_SIZE}
-              min={0}
-              max={100}
-              val={Math.floor(synth.efx.delay.wet.value) * 100}
-              color={false}
-              onChange={(val) =>
-                (synth.efx.delay.wet.value = Math.abs(val / 100))
-              }
-            >
-              <label>Delay Wet</label>
-            </Dial>
-          </ControlGroup>
+          <Dial
+            size={SMALL_KNOB_SIZE}
+            min={0}
+            max={1000}
+            val={Math.floor(synth.efx.reverb.decay) * 100}
+            onChange={(val) => 
+              (synth.efx.reverb.decay = Math.abs(val / 100))}
+          >
+            <label>reverb decay</label>
+          </Dial>
+          <Dial
+            size={SMALL_KNOB_SIZE}
+            min={0}
+            max={100}
+            val={synth.efx.reverb.wet.value * 100}
+            color={false}
+            onChange={(val) =>
+              (synth.efx.reverb.wet.value = Math.abs(val / 100))
+            }
+          >
+            <label>reverb wet</label>
+          </Dial>
+          <Dial
+            size={SMALL_KNOB_SIZE}
+            min={0}
+            max={100}
+            val={Math.floor(synth.efx.delay.wet.value) * 100}
+            color={false}
+            onChange={(val) =>
+              (synth.efx.delay.wet.value = Math.abs(val / 100))
+            }
+          >
+            <label>delay wet</label>
+          </Dial>
         </ControlGroup>
       </div>
     </div>

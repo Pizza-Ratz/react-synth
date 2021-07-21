@@ -34,10 +34,11 @@ function App() {
               <Panner3D />
             </div>
           </div>
-          <SynthPad2 />
-          {/* <SynthPad1 /> */}
-          {/* <SynthPluck1 />  */}
-          {/* <SynthPluck2 /> */}
+          {/* <SynthLead1 /> */}
+          {/* <SynthPad2 /> */}
+          <SynthPad1 />
+          <SynthPluck1 /> 
+          <SynthPluck2 />
           {/* <SynthSaw1 /> */}
         </BusContextProvider>
       </main>

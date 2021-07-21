@@ -50,43 +50,46 @@ const SynthPluck1 = () => {
       >
         <label>Volume</label>
       </Dial>
-
-      <ControlGroup label="filter">
+      <Dial
+        min={1}
+        max={1500}
+        size={30}
+        value={synth.efx.autoFilter.baseFrequency}
+        onChange={(val) => (synth.efx.autoFilter.baseFrequency = val)}
+      >
+        <label>cutoff</label>
+      </Dial>
+      <Dial
+        min={0}
+        max={100}
+        size={30}
+        value={Math.floor(synth.efx.autoFilter.depth.value) * 100}
+        onChange={(val) => (synth.efx.autoFilter.depth.value = Math.abs(val / 100))}
+      >
+        <label>depth</label>
+      </Dial>
+      <ControlGroup label="effects">
         <Dial
-          min={1}
-          max={1500}
-          value={synth.efx.autoFilter.baseFrequency}
-          onChange={(val) => (synth.efx.autoFilter.baseFrequency = val)}
+          min={0}
+          max={100}
+          size={30}
+          value={Math.floor(synth.efx.reverb.wet.value) * 100}
+          onChange={(val) => synth.efx.reverb.set({ wet: Math.abs(val / 100) })}
         >
-          <label>cutoff</label>
+          <label>reverb wet</label>
         </Dial>
         <Dial
           min={0}
           max={100}
-          value={Math.floor(synth.efx.autoFilter.depth.value) * 100}
-          onChange={(val) => (synth.efx.autoFilter.depth.value = Math.abs(val / 100))}
+          size={30}
+          value={Math.floor(synth.efx.delay.wet.value) * 100}
+          onChange={(val) =>
+            synth.efx.delay.set({ wet: Math.abs(val / 100) })
+          }
         >
-          <label>depth</label>
+          <label>delay wet</label>
         </Dial>
       </ControlGroup>
-      <Dial
-        min={0}
-        max={100}
-        value={Math.floor(synth.efx.reverb.wet.value) * 100}
-        onChange={(val) => synth.efx.reverb.set({ wet: Math.abs(val / 100) })}
-      >
-        <label>reverb</label>
-      </Dial>
-      <Dial
-        min={0}
-        max={100}
-        value={Math.floor(synth.efx.delay.wet.value) * 100}
-        onChange={(val) =>
-          synth.efx.delay.set({ wet: Math.abs(val / 100) })
-        }
-      >
-        <label>delay</label>
-      </Dial>
     </div>
   );
 };
