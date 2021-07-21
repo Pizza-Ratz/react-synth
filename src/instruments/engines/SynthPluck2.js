@@ -84,7 +84,7 @@ export default class SynthPluck2 extends Tone.PolySynth {
         mid: -10,
         midFrequency: 500,
         high: -5,
-        highFrequency: 1000
+        highFrequency: 1000,
       }),
       // eq2: new Tone.EQ3({
       //   low: 0,
@@ -98,7 +98,7 @@ export default class SynthPluck2 extends Tone.PolySynth {
     };
 
     this.pattern = options.pattern || patterns.prelude;
-    
+
     this.efx.reverb.generate();
     // this.efx.convolver.connect(this.efx.reverb.convolver);
     this.preEfxOut = this.output;

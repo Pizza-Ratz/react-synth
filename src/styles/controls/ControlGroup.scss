@@ -26,7 +26,7 @@
     }
     & > label {
       @include text.label;
-      translate: 0 -0.7em;
+      transform: translate(0, -0.7em);
       white-space: nowrap;
     }
   }

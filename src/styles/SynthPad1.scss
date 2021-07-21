@@ -32,7 +32,19 @@
     display: flex;
   }
 
-  .control-group .control-group {
-    margin: 3px;
+  .control-group {
+    .control-group {
+      margin: 3px;
+
+      .controls {
+        margin: 3px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+      }
+    }
+    .control-group:not(:first-child) {
+      margin-top: 0.5em;
+    }
   }
 }

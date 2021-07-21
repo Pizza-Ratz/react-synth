@@ -42,6 +42,7 @@ const SynthPluck2 = () => {
     <div className={`synth-pluck-2`}>
       <h3>Prelude</h3>
       <Dial
+        size={50}
         min={0}
         max={1000}
         value={dBToKnob(synth.volume.value)}
@@ -57,9 +58,7 @@ const SynthPluck2 = () => {
           max={100}
           size={30}
           value={Math.floor(synth.efx.dist.wet.value) * 100}
-          onChange={(val) =>
-            (synth.efx.dist.wet.value = Math.abs(val / 100))
-          }
+          onChange={(val) => (synth.efx.dist.wet.value = Math.abs(val / 100))}
         >
           <label>distortion</label>
         </Dial>
@@ -68,9 +67,7 @@ const SynthPluck2 = () => {
           max={100}
           size={30}
           value={Math.floor(synth.efx.phaser.Q.value) * 100}
-          onChange={(val) =>
-            (synth.efx.phaser.Q.value = Math.abs(val / 100))
-          }
+          onChange={(val) => (synth.efx.phaser.Q.value = Math.abs(val / 100))}
         >
           <label>phaser q</label>
         </Dial>
@@ -88,9 +85,7 @@ const SynthPluck2 = () => {
           max={100}
           size={30}
           value={Math.floor(synth.efx.delay.wet.value) * 100}
-          onChange={(val) =>
-            (synth.efx.delay.wet.value = Math.abs(val / 100))
-          }
+          onChange={(val) => (synth.efx.delay.wet.value = Math.abs(val / 100))}
         >
           <label>delay</label>
         </Dial>

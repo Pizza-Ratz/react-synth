@@ -52,15 +52,31 @@ export default class SynthPad1 extends Tone.PolySynth {
       }),
     };
 
-    this.efx.reverb.generate();
     this.pattern = options.pattern || patterns.eternity;
-    this.preEfxOut = this.output
+    this.preEfxOut = this.output;
     this.noteIndex = 0;
+    this.preEfxVolume = this.volume;
+
     this.playing = false;
     this.transport = options.transport || Tone.getTransport();
 
     return this;
   }
+
+  // async postInit() {
+  //   const postEfxVolume = new Tone.Volume();
+  //   this.chain(
+  //     this.efx.distortion,
+  //     this.efx.delay,
+  //     this.efx.reverb,
+  //     postEfxVolume
+  //   );
+  //   delete this.volume;
+  //   delete this.output;
+  //   this.output = postEfxVolume;
+  //   this.volume = postEfxVolume.volume;
+  //   await this.efx.reverb.generate();
+  // }
 
   repeater(time) {
     if (this.pleaseStop) {

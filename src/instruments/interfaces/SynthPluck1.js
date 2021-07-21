@@ -17,7 +17,7 @@ const SynthPluck1 = () => {
     synth.chain(
       synth.efx.vibrato,
       synth.efx.dist,
-      synth.efx.eq,
+      // synth.efx.eq,
       synth.efx.autoFilter,
       synth.efx.delay,
       synth.efx.reverb,
@@ -26,6 +26,7 @@ const SynthPluck1 = () => {
       bus
     );
     // synth.efx.reverb.generate();
+    synth.efx.autoFilter.start();
     synth.start();
     // synth.postInit();
     // synth.connect(bus);
@@ -41,6 +42,7 @@ const SynthPluck1 = () => {
     <div className={`synth-pluck-1`}>
       <h3>Eternity</h3>
       <Dial
+        size={50}
         min={0}
         max={1000}
         value={dBToKnob(synth.volume.value, 1000)}
@@ -64,7 +66,9 @@ const SynthPluck1 = () => {
         max={100}
         size={30}
         value={Math.floor(synth.efx.autoFilter.depth.value) * 100}
-        onChange={(val) => (synth.efx.autoFilter.depth.value = Math.abs(val / 100))}
+        onChange={(val) =>
+          (synth.efx.autoFilter.depth.value = Math.abs(val / 100))
+        }
       >
         <label>depth</label>
       </Dial>
@@ -83,9 +87,7 @@ const SynthPluck1 = () => {
           max={100}
           size={30}
           value={Math.floor(synth.efx.delay.wet.value) * 100}
-          onChange={(val) =>
-            synth.efx.delay.set({ wet: Math.abs(val / 100) })
-          }
+          onChange={(val) => synth.efx.delay.set({ wet: Math.abs(val / 100) })}
         >
           <label>delay wet</label>
         </Dial>

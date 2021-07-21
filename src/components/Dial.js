@@ -181,7 +181,7 @@ class Dial extends React.Component {
 }
 
 Dial.defaultProps = {
-  size: 50,
+  size: 30,
   min: 10,
   max: 30,
   numTicks: 25,

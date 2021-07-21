@@ -14,7 +14,7 @@ class SynthPluck1 extends Tone.PolySynth {
               type: "fmtriangle",
               modulationType: "triangle",
               modulationIndex: 5,
-              harmonicity: 3
+              harmonicity: 3,
             },
             envelope: {
               attack: 0.05,
@@ -66,25 +66,44 @@ class SynthPluck1 extends Tone.PolySynth {
         depth: 0.3,
         type: "sine",
       }),
-      eq: new Tone.EQ3({
-        low: 0,
-        lowFrequency: 130,
-        mid: -5,
-        midFrequency: 500,
-        high: -3,
-        highFrequency: 2000
-      }),
+      // eq: new Tone.EQ3({
+      //   low: 0,
+      //   lowFrequency: 130,
+      //   mid: -5,
+      //   midFrequency: 500,
+      //   high: -3,
+      //   highFrequency: 2000,
+      // }),
     };
 
     this.efx.reverb.generate();
     this.pattern = options.pattern || patterns.fantasy;
-    this.preEfxOut = this.output
+    this.preEfxOut = this.output;
     this.noteIndex = 0;
     this.playing = false;
     this.transport = options.transport || Tone.getTransport();
 
     return this;
   }
+
+  // this doesn't work for polysynths?
+  // static async postInit(synth) {
+  //   const postEfxOut = new Tone.Volume();
+  //   synth.chain(
+  //     synth.efx.vibrato,
+  //     synth.efx.dist,
+  //     synth.efx.autoFilter,
+  //     synth.efx.delay,
+  //     synth.efx.reverb,
+  //     postEfxOut
+  //   );
+
+  //   delete synth.volume;
+  //   delete synth.output;
+  //   synth.output = postEfxOut;
+  //   synth.volume = postEfxOut.volume;
+  //   await this.efx.reverb.generate();
+  // }
 
   repeater(time) {
     if (this.pleaseStop) {
@@ -98,6 +117,7 @@ class SynthPluck1 extends Tone.PolySynth {
 
   start() {
     this.pleaseStop = false;
+    this.efx.autoFilter.start();
     this.noteIndex = 0;
     this.nextEvent = this.transport.scheduleRepeat((time) => {
       this.repeater(time);
@@ -106,6 +126,7 @@ class SynthPluck1 extends Tone.PolySynth {
 
   stop() {
     this.pleaseStop = true;
+    this.efx.autoFilter.stop();
     if (this.nextEvent) this.transport.cancel(this.nextEvent);
     delete this.nextEvent;
   }
