@@ -1,5 +1,5 @@
 import * as Tone from "tone";
-import { patterns } from "./Patterns";
+import { patterns } from "../../lib/Patterns";
 
 /**
  * A Warm Polysynth Pad
@@ -75,22 +75,22 @@ class SynthPad2 extends Tone.PolySynth {
     return this;
   }
 
-  postInit() {
-    this.preEfxVolume = this.volume;
-    const postEfxVolume = new Volume();
-    this.chain(
-      this.efx.distortion,
-      this.efx.delay,
-      this.efx.chorus,
-      this.efx.autoFilter,
-      this.efx.reverb,
-      postEfxVolume
-    );
-    delete this.volume;
-    delete this.output;
-    this.output = postEfxVolume;
-    this.volume = this.output.volume;
-  }
+  // postInit() {
+  //   this.preEfxVolume = this.volume;
+  //   const postEfxVolume = new Tone.Volume();
+  //   this.chain(
+  //     this.efx.distortion,
+  //     this.efx.delay,
+  //     this.efx.chorus,
+  //     this.efx.autoFilter,
+  //     this.efx.reverb,
+  //     postEfxVolume
+  //   );
+  //   delete this.volume;
+  //   delete this.output;
+  //   this.output = postEfxVolume;
+  //   this.volume = this.output.volume;
+  // }
 
   repeater(time) {
     if (this.pleaseStop) {

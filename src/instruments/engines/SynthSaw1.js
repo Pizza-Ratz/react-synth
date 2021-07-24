@@ -1,28 +1,44 @@
 import * as Tone from "tone";
 import { patterns } from "../../lib/Patterns";
 
-class SynthPluck1 extends Tone.PolySynth {
+/**
+ An FM synth with a pure tone on top with vibrato and a crunchy 303-like tone on the bottom.
+ **/
+export default class SynthSaw1 extends Tone.PolySynth {
   constructor(options = {}) {
     super(
       Object.assign(
         {
-          voice: Tone.Synth,
+          voice: Tone.MonoSynth,
           maxPolyphony: 8,
           volume: 0,
           options: {
             oscillator: {
-              type: "fmtriangle",
-              modulationType: "triangle",
-              modulationIndex: 5,
-              harmonicity: 3,
+              type: "fatsawtooth",
+              count: 3,
+              spread: 10,
+              phase: 30,
             },
             envelope: {
-              attack: 0.05,
-              decay: 0.7,
-              decayCurve: "exponential",
-              sustain: 0.1,
-              release: 1.2,
-              releaseCurve: "linear",
+              attack: 0.02,
+              decay: 0.2,
+              decayCurve: "linear",
+              sustain: 0.5,
+              release: 0.5,
+              releaseCurve: "exponential"
+            },
+            filter: {
+              Q: 0.2,
+              rolloff: -24,
+              type: "lowpass",
+            },
+            filterEnvelope: {
+              attack: 1,
+              baseFrequency: 2000,
+              decay: 2,
+              exponent: 1,
+              octaves: 1.5,
+              release: 2,
             },
           },
         },
@@ -31,79 +47,59 @@ class SynthPluck1 extends Tone.PolySynth {
     );
 
     this.efx = {
+      gain: new Tone.Gain(1),
       dist: new Tone.Distortion(0),
       delay: new Tone.FeedbackDelay({
-        delayTime: "8n.",
+        duration: "8n.",
         feedback: 0.35,
         wet: 0.15,
+      }),
+      reverb: new Tone.Reverb({
+        decay: 3,
+        preDelay: 0.1,
+        wet: 0.1,
       }),
       // reverb: new Tone.Freeverb({
       //   dampening: 10000,
       //   roomSize: 0.8,
-      //   wet: 0.1,
+      //   wet: 0.2,
       // }),
-      reverb: new Tone.Reverb({
-        // convolver: this.efx.convolver,
-        decay: 6,
-        preDelay: 0.2,
-        wet: 0.25,
-      }),
       autoFilter: new Tone.AutoFilter({
-        frequency: "1n",
+        frequency: "8n",
         type: "sine",
-        depth: 0.1,
-        baseFrequency: 1000,
-        octaves: 4,
+        depth: 1,
+        baseFrequency: 500,
+        octaves: 3,
         filter: {
           type: "lowpass",
           rolloff: -24,
-          Q: 1,
+          Q: 0.5,
         },
-      }).start(),
+      }),
+      lfo1: new Tone.LFO('8n.', 0, 0.8),
+      lfo2: new Tone.LFO('8n.', 7, 11),
       vibrato: new Tone.Vibrato({
-        maxDelay: 0.001,
-        frequency: 9,
-        depth: 0.3,
+        maxDelay: 0.002,
+        frequency: 7,
+        depth: 0,
         type: "sine",
       }),
-      // eq: new Tone.EQ3({
-      //   low: 0,
-      //   lowFrequency: 130,
-      //   mid: -5,
-      //   midFrequency: 500,
-      //   high: -3,
-      //   highFrequency: 2000,
-      // }),
     };
 
+    this.pattern = options.pattern || patterns.alive;
+    
     this.efx.reverb.generate();
-    this.pattern = options.pattern || patterns.fantasy;
+    // this.efx.convolver.connect(this.efx.reverb.convolver);
+    this.efx.lfo1.connect(this.efx.vibrato.depth);
+    this.efx.lfo2.connect(this.efx.vibrato.frequency);
     this.preEfxOut = this.output;
     this.noteIndex = 0;
     this.playing = false;
+
     this.transport = options.transport || Tone.getTransport();
 
     return this;
   }
-
-  // this doesn't work for polysynths?
-  // static async postInit(synth) {
-  //   const postEfxOut = new Tone.Volume();
-  //   synth.chain(
-  //     synth.efx.vibrato,
-  //     synth.efx.dist,
-  //     synth.efx.autoFilter,
-  //     synth.efx.delay,
-  //     synth.efx.reverb,
-  //     postEfxOut
-  //   );
-
-  //   delete synth.volume;
-  //   delete synth.output;
-  //   synth.output = postEfxOut;
-  //   synth.volume = postEfxOut.volume;
-  //   await this.efx.reverb.generate();
-  // }
 
   repeater(time) {
     if (this.pleaseStop) {
@@ -117,7 +113,6 @@ class SynthPluck1 extends Tone.PolySynth {
 
   start() {
     this.pleaseStop = false;
-    this.efx.autoFilter.start();
     this.noteIndex = 0;
     this.nextEvent = this.transport.scheduleRepeat((time) => {
       this.repeater(time);
@@ -126,9 +121,7 @@ class SynthPluck1 extends Tone.PolySynth {
 
   stop() {
     this.pleaseStop = true;
-    this.efx.autoFilter.stop();
     if (this.nextEvent) this.transport.cancel(this.nextEvent);
-    delete this.nextEvent;
   }
 
   dispose() {
@@ -138,5 +131,3 @@ class SynthPluck1 extends Tone.PolySynth {
     super.dispose();
   }
 }
-
-export default SynthPluck1;

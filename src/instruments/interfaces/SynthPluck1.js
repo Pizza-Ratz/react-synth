@@ -17,14 +17,20 @@ const SynthPluck1 = () => {
     synth.chain(
       synth.efx.vibrato,
       synth.efx.dist,
+      // synth.efx.eq,
       synth.efx.autoFilter,
       synth.efx.delay,
       synth.efx.reverb,
+      // synth.efx.eq2,
+      // synth.efx.chorus,
       bus
     );
+    // synth.efx.reverb.generate();
+    synth.efx.autoFilter.start();
     synth.start();
     // synth.postInit();
     // synth.connect(bus);
+    //synth.output.connect(bus);
     synth.output.connect(meter);
     meter.normalRange = true;
     return () => {
@@ -46,45 +52,46 @@ const SynthPluck1 = () => {
       >
         <label>Volume</label>
       </Dial>
-
-      <ControlGroup label="filter">
-        <Dial
-          size={30}
-          min={1}
-          max={1500}
-          value={synth.efx.autoFilter.baseFrequency}
-          onChange={(val) => (synth.efx.autoFilter.baseFrequency = val)}
-        >
-          <label>cutoff</label>
-        </Dial>
-        <Dial
-          size={30}
-          min={0}
-          max={100}
-          value={Math.floor(synth.efx.autoFilter.filter.Q.value) * 100}
-          onChange={(val) => (synth.efx.autoFilter.filter.Q.value = Math.abs(val / 100))}
-        >
-          <label>Q</label>
-        </Dial>
-      </ControlGroup>
       <Dial
-        min={0}
-        max={100}
-        value={Math.floor(synth.efx.reverb.wet.value) * 100}
-        onChange={(val) => synth.efx.reverb.set({ wet: Math.abs(val / 100) })}
+        min={1}
+        max={1500}
+        size={30}
+        value={synth.efx.autoFilter.baseFrequency}
+        onChange={(val) => (synth.efx.autoFilter.baseFrequency = val)}
       >
-        <label>reverb</label>
+        <label>cutoff</label>
       </Dial>
       <Dial
         min={0}
         max={100}
-        value={Math.floor(synth.efx.delay.feedback.value) * 100}
+        size={30}
+        value={Math.floor(synth.efx.autoFilter.depth.value) * 100}
         onChange={(val) =>
-          synth.efx.delay.set({ feedback: Math.abs(val / 100) })
+          (synth.efx.autoFilter.depth.value = Math.abs(val / 100))
         }
       >
-        <label>delay feedback</label>
+        <label>depth</label>
       </Dial>
+      <ControlGroup label="effects">
+        <Dial
+          min={0}
+          max={100}
+          size={30}
+          value={Math.floor(synth.efx.reverb.wet.value) * 100}
+          onChange={(val) => synth.efx.reverb.set({ wet: Math.abs(val / 100) })}
+        >
+          <label>reverb wet</label>
+        </Dial>
+        <Dial
+          min={0}
+          max={100}
+          size={30}
+          value={Math.floor(synth.efx.delay.wet.value) * 100}
+          onChange={(val) => synth.efx.delay.set({ wet: Math.abs(val / 100) })}
+        >
+          <label>delay wet</label>
+        </Dial>
+      </ControlGroup>
     </div>
   );
 };

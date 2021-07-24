@@ -2,7 +2,7 @@
 @use 'text';
 @use 'objects';
 
-.synth-pad-1 {
+.synth-lead-1 {
   @include materials.base-plate;
   @include objects.console-panel;
 
@@ -32,19 +32,7 @@
     display: flex;
   }
 
-  .control-group {
-    .control-group {
-      margin: 3px;
-
-      .controls {
-        margin: 3px;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-evenly;
-      }
-    }
-    .control-group:not(:first-child) {
-      margin-top: 0.5em;
-    }
+  .control-group .control-group {
+    margin: 3px;
   }
 }

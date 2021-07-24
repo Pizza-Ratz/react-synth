@@ -2,29 +2,37 @@ import React from "react";
 import PropTypes from "prop-types";
 import SynthPluckInst from "../../instruments/engines/SynthPluck2";
 import Dial from "../../components/Dial";
+import ControlGroup from "../../components/ControlGroup";
 import "../../styles/SynthPluck2.scss";
 import BusContext from "../../contexts/BusContext";
 import { dBToKnob, knobToDB } from "../../lib/transformers";
 import * as Tone from "tone";
-import ControlGroup from "../../components/ControlGroup";
 
 const SynthPluck2 = () => {
   const [synth] = React.useState(new SynthPluckInst());
-  const [meter] = React.useState(new Tone.Meter());
   const bus = React.useContext(BusContext);
+  const [meter] = React.useState(new Tone.Meter());
 
   React.useEffect(() => {
     synth.chain(
-      synth.efx.gain,
-      synth.efx.distortion,
+      // synth.efx.gain,
+      // synth.efx.vibrato,
+      synth.efx.eq,
+      synth.efx.dist,
+      synth.efx.phaser,
       synth.efx.delay,
       synth.efx.reverb,
+      // synth.efx.eq2,
+      // synth.efx.chorus,
       bus
     );
-    meter.normalRange = true;
-    synth.output.connect(bus);
-    synth.output.connect(meter);
+    // synth.efx.reverb.generate();
     synth.start();
+    // synth.postInit();
+    // synth.connect(bus);
+    //synth.output.connect(bus);
+    synth.output.connect(meter);
+    meter.normalRange = true;
     return () => {
       synth.stop();
     };
@@ -32,7 +40,7 @@ const SynthPluck2 = () => {
 
   return (
     <div className={`synth-pluck-2`}>
-      <h3>Fantasy</h3>
+      <h3>Prelude</h3>
       <Dial
         size={50}
         min={0}
@@ -44,52 +52,44 @@ const SynthPluck2 = () => {
       >
         <label>Volume</label>
       </Dial>
-      <ControlGroup label="filter">
+      <ControlGroup label="effects">
         <Dial
-          min={100}
-          max={2500}
-          value={Math.floor(synth.filter.frequency.value)}
-          onChange={(val) => (synth.filter.frequency.value = val)}
-        > 
-          <label>cutoff</label>
+          min={0}
+          max={100}
+          size={30}
+          value={Math.floor(synth.efx.dist.wet.value) * 100}
+          onChange={(val) => (synth.efx.dist.wet.value = Math.abs(val / 100))}
+        >
+          <label>distortion</label>
         </Dial>
         <Dial
           min={0}
           max={100}
-          value={Math.floor(synth.filter.Q.value) * 100}
-          onChange={(val) => (synth.filter.Q.value = Math.abs(val / 100))}
+          size={30}
+          value={Math.floor(synth.efx.phaser.Q.value) * 100}
+          onChange={(val) => (synth.efx.phaser.Q.value = Math.abs(val / 100))}
         >
-          <label>Q</label>
+          <label>phaser q</label>
+        </Dial>
+        <Dial
+          min={0}
+          max={100}
+          size={30}
+          value={Math.floor(synth.efx.reverb.wet.value) * 100}
+          onChange={(val) => (synth.efx.reverb.wet.value = Math.abs(val / 100))}
+        >
+          <label>reverb</label>
+        </Dial>
+        <Dial
+          min={0}
+          max={100}
+          size={30}
+          value={Math.floor(synth.efx.delay.wet.value) * 100}
+          onChange={(val) => (synth.efx.delay.wet.value = Math.abs(val / 100))}
+        >
+          <label>delay</label>
         </Dial>
       </ControlGroup>
-      <Dial
-        min={1}
-        max={100}
-        value={Math.floor(synth.efx.distortion.distortion) * 100}
-        onChange={(val) =>
-          (synth.efx.distortion.distortion = Math.abs(val / 100))
-        }
-      >
-        <label>distortion</label>
-      </Dial>
-      <Dial
-        min={0}
-        max={100}
-        value={Math.floor(synth.efx.reverb.wet.value) * 100}
-        onChange={(val) => (synth.efx.reverb.wet.value = Math.abs(val / 100))}
-      >
-        <label>reverb</label>
-      </Dial>
-      <Dial
-        min={0}
-        max={100}
-        value={Math.floor(synth.efx.delay.feedback.value) * 100}
-        onChange={(val) =>
-          (synth.efx.delay.feedback.value = Math.abs(val / 100))
-        }
-      >
-        <label>delay feedback</label>
-      </Dial>
     </div>
   );
 };

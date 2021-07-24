@@ -1,73 +1,60 @@
 import * as Tone from "tone";
-import { Volume } from "tone";
 import { patterns } from "../../lib/Patterns";
+import Debug from "debug";
 
 /**
  * A bright FM pad with a gentle attack.
  */
-export default class SynthPad1 extends Tone.DuoSynth {
+export default class SynthPad1 extends Tone.PolySynth {
   constructor(options = {}) {
     super(
       Object.assign(
         {
-          harmonicity: 0.5,
-          volume: -10,
-          voice0: {
-            oscillator: { type: "sawtooth" },
+          maxPolyphony: 8,
+          volume: 0,
+          voice: Tone.MonoSynth,
+          options: {
+            oscillator: {
+              voices: 3,
+              detune: 1,
+              type: "fatsawtooth",
+            },
             envelope: {
-              attack: 4,
-              decay: 1,
+              attack: 1,
+              decay: 0.5,
               sustain: 0.4,
-              release: 7,
+              release: 1.5,
             },
             filterEnvelope: {
-              baseFrequency: 400,
-              attack: 0.01,
+              baseFrequency: 1100,
+              attack: 0.8,
               decay: 0,
               sustain: 1,
-              release: 0.53,
+              release: 1,
             },
           },
-          voice1: {
-            oscillator: { type: "sine" },
-            envelope: {
-              attack: 3,
-              decay: 1,
-              sustain: 0.4,
-              release: 7,
-            },
-            filterEnvelope: {
-              baseFrequency: 1200,
-              attack: 0.01,
-              decay: 0.5,
-              sustain: 1,
-              release: 2,
-            },
-          },
-          vibratoRate: 0.5,
-          vibratoAmount: 0.1,
         },
         options
       )
     );
 
-    this.pattern = options.pattern || patterns.prelude;
-    this.noteIndex = 0;
-
     this.efx = {
-      distortion: new Tone.Distortion(0),
       delay: new Tone.FeedbackDelay({
-        duration: "8n.",
+        delayTime: "8n.",
         feedback: 0.3,
         wet: 0.2,
       }),
-      reverb: new Tone.Freeverb({
-        dampening: 2000,
-        roomSize: 0.9,
-        wet: 0.3,
+      reverb: new Tone.Reverb({
+        // convolver: this.efx.convolver,
+        decay: 6,
+        preDelay: 0.2,
+        wet: 0.8,
       }),
     };
 
+    this.pattern = options.pattern || patterns.eternity;
+    this.preEfxOut = this.output;
+    this.noteIndex = 0;
     this.preEfxVolume = this.volume;
 
     this.playing = false;
@@ -76,20 +63,20 @@ export default class SynthPad1 extends Tone.DuoSynth {
     return this;
   }
 
-  postInit() {
-    const postEfxVolume = new Volume();
-    this.chain(
-      this.efx.distortion,
-      this.efx.delay,
-      this.efx.reverb,
-      postEfxVolume
-    );
-    delete this.volume;
-    delete this.output;
-    this.output = postEfxVolume;
-    this.volume = postEfxVolume.volume;
-    this.start();
-  }
+  // async postInit() {
+  //   const postEfxVolume = new Tone.Volume();
+  //   this.chain(
+  //     this.efx.distortion,
+  //     this.efx.delay,
+  //     this.efx.reverb,
+  //     postEfxVolume
+  //   );
+  //   delete this.volume;
+  //   delete this.output;
+  //   this.output = postEfxVolume;
+  //   this.volume = postEfxVolume.volume;
+  //   await this.efx.reverb.generate();
+  // }
 
   repeater(time) {
     if (this.pleaseStop) {
